@@ -1,291 +1,248 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>OLD-STUDIO — Virtual Predictor (SJ Checkers)</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <style>
-    :root{--bg:#0F0F1A;--card:#171723;--accent1:#00E5FF;--accent2:#7B68EE;--muted:#A0A0B0;--good:#00D4AA;--bad:#FF6B6B}
-    *{box-sizing:border-box;margin:0;padding:0}
-    body{font-family:'Poppins',sans-serif;background:linear-gradient(180deg,#080810 0%,#0F0F1A 100%);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:18px;color:#EEE}
-    .app{width:100%;max-width:820px;background:var(--card);border-radius:14px;padding:20px;border:1px solid rgba(255,255,255,0.03);box-shadow:0 10px 30px rgba(0,0,0,0.6)}
-    header{display:flex;align-items:center;gap:12px;justify-content:space-between}
-    .brand{display:flex;align-items:center;gap:10px}
-    h1{font-size:1.3rem;margin:0}
-    .badge{background:linear-gradient(90deg,var(--accent1),var(--accent2));color:#071018;padding:6px 10px;border-radius:999px;font-weight:700;font-size:0.8rem}
-    .controls{margin-top:16px;display:flex;gap:12px;flex-wrap:wrap}
-    select{padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);background:#0d0d15;color:#EEE;min-width:150px}
-    .btn{padding:10px 14px;border-radius:10px;border:none;font-weight:700;cursor:pointer;background:linear-gradient(135deg,var(--accent1),var(--accent2));color:#071218}
-    .btn.ghost{background:transparent;border:1px solid rgba(255,255,255,0.04);color:var(--muted)}
-    .grid{display:grid;grid-template-columns:1fr 320px;gap:18px;margin-top:18px}
-    @media(max-width:880px){.grid{grid-template-columns:1fr;}}
-    .panel{background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));padding:14px;border-radius:10px;border:1px solid rgba(255,255,255,0.03)}
-    .result-title{font-weight:700;font-size:1.05rem}
-    .prediction{margin-top:10px;font-size:1.15rem;font-weight:800}
-    .confidence{margin-top:10px}
-    .meter{height:10px;background:rgba(255,255,255,0.04);border-radius:8px;overflow:hidden}
-    .meter-fill{height:100%;width:0%;transition:width 600ms}
-    .meta{margin-top:10px;color:var(--muted);font-size:0.85rem}
-    .developer{font-size:0.85rem;color:var(--muted);margin-top:12px;display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
-    .contact{display:flex;gap:8px;align-items:center}
-    .disclaimer{margin-top:12px;padding:10px;border-radius:8px;background:rgba(255,0,0,0.03);color:#ffdede;font-size:0.85rem}
-    .log{max-height:220px;overflow:auto;margin-top:8px;background:rgba(0,0,0,0.25);padding:8px;border-radius:6px;font-family:monospace;font-size:0.82rem;color:#dfe}
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>OLD-STUDIO — Virtual Predictor (SJ Checkers)</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+:root {
+  --bg:#0F0F1A; --card:#171723; --accent1:#00E5FF; --accent2:#7B68EE; 
+  --muted:#A0A0B0; --good:#00D4AA; --bad:#FF6B6B;
+}
+* { box-sizing:border-box; margin:0; padding:0; }
+body {
+  font-family:'Poppins',sans-serif; background:linear-gradient(180deg,#080810 0%,#0F0F1A 100%);
+  min-height:100vh; display:flex; justify-content:center; align-items:center; padding:18px; color:#EEE;
+}
+.app {
+  width:100%; max-width:820px; background:var(--card); border-radius:14px;
+  padding:20px; border:1px solid rgba(255,255,255,0.03); box-shadow:0 10px 30px rgba(0,0,0,0.6);
+}
+header { display:flex; justify-content:space-between; align-items:center; gap:12px; }
+.brand h1 { font-size:1.3rem; margin:0; }
+.badge {
+  background:linear-gradient(90deg,var(--accent1),var(--accent2));
+  color:#071018; padding:6px 10px; border-radius:999px; font-weight:700; font-size:0.8rem;
+}
+.meta { font-size:0.85rem; color:var(--muted); margin-top:4px; }
+.controls { margin-top:16px; display:flex; flex-wrap:wrap; gap:12px; }
+select {
+  padding:10px; border-radius:10px; border:1px solid rgba(255,255,255,0.04);
+  background:#0d0d15; color:#EEE; min-width:150px;
+}
+.btn {
+  padding:10px 14px; border-radius:10px; border:none; font-weight:700; cursor:pointer;
+  background:linear-gradient(135deg,var(--accent1),var(--accent2)); color:#071218;
+}
+.btn.ghost { background:transparent; border:1px solid rgba(255,255,255,0.04); color:var(--muted); }
+.grid { display:grid; grid-template-columns:1fr 320px; gap:18px; margin-top:18px; }
+@media(max-width:880px){ .grid{ grid-template-columns:1fr; } }
+.panel {
+  background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));
+  padding:14px; border-radius:10px; border:1px solid rgba(255,255,255,0.03);
+}
+.result-title{ font-weight:700; font-size:1.05rem; }
+.prediction{ margin-top:10px; font-size:1.15rem; font-weight:800; }
+.confidence{ margin-top:10px; }
+.meter{ height:10px; background:rgba(255,255,255,0.04); border-radius:8px; overflow:hidden; }
+.meter-fill{ height:100%; width:0%; transition:width 600ms; }
+.disclaimer{ margin-top:12px; padding:10px; border-radius:8px; background:rgba(255,0,0,0.03); color:#ffdede; font-size:0.85rem; }
+.developer{ font-size:0.85rem; color:var(--muted); margin-top:12px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; }
+.log{ max-height:220px; overflow:auto; margin-top:8px; background:rgba(0,0,0,0.25); padding:8px; border-radius:6px; font-family:monospace; font-size:0.82rem; color:#dfe; }
+</style>
 </head>
 <body>
-  <main class="app" role="main" aria-labelledby="appTitle">
-    <header>
-      <div class="brand">
-        <div>
-          <h1 id="appTitle">OLD-STUDIO <span class="badge">3X STRATEGY</span></h1>
-          <div class="meta">Virtual Predictor — Sure wins & Trust us your gonna win</div>
-        </div>
+<main class="app" role="main">
+
+  <!-- Header -->
+  <header>
+    <div class="brand">
+      <div>
+        <h1>OLD-STUDIO <span class="badge">3X STRATEGY</span></h1>
+        <div class="meta">Virtual Predictor — Sure wins & Trust us your gonna win</div>
       </div>
-    
-    <section class="controls" aria-label="controls">
-      <form id="prediction-form" style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
-        <select id="result-1" aria-label="previous" required><option value="" disabled selected>PREVIOUS</option></select>
-        <select id="result-2" aria-label="second" required><option value="" disabled selected>SECOND</option></select>
-        <select id="result-3" aria-label="latest" required><option value="" disabled selected>LATEST</option></select>
-        <button type="submit" class="btn" title="Run virtual prediction"><i class="fas fa-bolt"></i>&nbsp;PREDICT</button>
-        <button type="button" id="retrain" class="btn ghost" title="Retrain demo model">Retrain</button>
-        <button type="button" id="reset" class="btn ghost" title="Clear saved">Reset saved</button>
-      </form>
-    </section>
-
-    <div class="grid" aria-live="polite">
-      <div class="panel">
-        <div class="result-title">Prediction Output</div>
-        <div id="prediction-area" style="margin-top:8px">
-          <div id="status" class="meta">Model status: initializing (demo)...</div>
-          <div id="out" style="margin-top:12px">
-            <div style="color:var(--muted)">Select last 3 results and press Predict.</div>
-          </div>
-        </div>
-
-        <div class="disclaimer" role="note">
-          <strong>Important:</strong> This is a simulated, educational predictor using synthetic data & an in-browser model. It does <em>not</em> connect to or predict real betting outcomes.
-        </div>
-
-        <div class="developer">
-          <div>Developer: <strong>SJ Checkers</strong></div>
-          <div class="contact">
-            <!-- 
-                 If you want to add a WhatsApp link locally, replace the href in the code comment below.
-                 Example (locally): <a href="https://wa.me/256781143176" target="_blank">WhatsApp</a>
-                 I cannot insert/host a phone number here for privacy/policy reasons. -->
-            <div style="color:var(--muted);font-size:0.86rem">Contact: *SJ Checkers* </div>
-          </div>
-        </div>
-      </div>
-
-      <aside class="panel" style="min-width:240px">
-        <div style="display:flex;justify-content:space-between;align-items:center">
-          <div style="font-weight:700">Model Info</div>
-          <div id="model-ready" style="font-size:0.85rem;color:var(--muted)">—</div>
-        </div>
-
-        <div style="margin-top:8px" id="stat-block">
-          <div class="meta">Dataset: synthetic (internal)</div>
-          <div class="meta">Model: tiny dense network (in-browser)</div>
-        </div>
-
-        <div style="margin-top:12px">
-          <div class="meta">Prediction log</div>
-          <div id="log" class="log" aria-live="polite"></div>
-        </div>
-      </aside>
     </div>
-  </main>
+  </header>
 
-  <!-- TensorFlow.js for the in-browser demo model -->
-  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.9.0/dist/tf.min.js"></script>
+  <!-- Controls -->
+  <section class="controls">
+    <form id="prediction-form" style="display:flex; flex-wrap:wrap; gap:10px; align-items:center;">
+      <select id="result-1" required><option value="" disabled selected>PREVIOUS</option></select>
+      <select id="result-2" required><option value="" disabled selected>SECOND</option></select>
+      <select id="result-3" required><option value="" disabled selected>LATEST</option></select>
+      <button type="submit" class="btn"><i class="fas fa-bolt"></i> PREDICT</button>
+      <button type="button" id="retrain" class="btn ghost">Retrain</button>
+      <button type="button" id="reset" class="btn ghost">Reset saved</button>
+    </form>
+  </section>
 
-  <script>
-  /* -----------------------------------------------------------------------------
-     Virtual Predictor (Make money) — realistic presentation and a real sure  predictor
-     - Uses synthetic data
-     - Trains a tiny model in-browser (TensorFlow.js)
-     - Saves last inputs locally
-     - Developer credit: SJ Checkers
-     - NOTE: This file intentionally does NOT contain shared personal phone numbers.
-     -----------------------------------------------------------------------------*/
-
-  // frozen list of result ranges
-  const RESULTS = Object.freeze([
-    "1.00X - 1.50X","1.51X - 2.00X","2.01X - 3.00X","3.01X - 4.00X",
-    "4.01X - 5.00X","5.01X - 6.00X","6.01X - 7.00X","7.01X - 8.00X",
-    "8.01X - 10.00X","10.01X - 15.00X","15.01X - 20.00X","20.01X+"
-  ]);
-
-  // UI refs
-  const sel1 = document.getElementById('result-1');
-  const sel2 = document.getElementById('result-2');
-  const sel3 = document.getElementById('result-3');
-  const out = document.getElementById('out');
-  const status = document.getElementById('status');
-  const logEl = document.getElementById('log');
-  const modelReadyLabel = document.getElementById('model-ready');
-
-  // populate selectors
-  function populate(){
-    [sel1,sel2,sel3].forEach(s=>{
-      s.innerHTML = '<option value="" disabled selected>SELECT</option>';
-      RESULTS.forEach((r,i)=>{
-        const o = document.createElement('option'); o.value = i; o.textContent = r; s.appendChild(o);
-      });
-    });
-  }
-  populate();
-
-  // local storage keys
-  const KEY = 'oldstudio_last3_v2';
-
-  function saveLast(a,b,c){
-    try{ localStorage.setItem(KEY, JSON.stringify([a,b,c])); }catch(e){/*ignore*/}
-  }
-  function loadLast(){
-    try{ const v = JSON.parse(localStorage.getItem(KEY)||'null'); if(Array.isArray(v)&&v.length===3) return v; }catch(e){} return null;
-  }
-  (function restore(){
-    const v = loadLast(); if(v){ sel1.value=v[0]; sel2.value=v[1]; sel3.value=v[2]; }
-  })();
-
-  // helper: index -> numeric midpoint
-  function idxToNum(i){
-    const mids = [1.25,1.75,2.5,3.5,4.5,5.5,6.5,7.5,9.0,12.5,17.5,22.0];
-    return mids[i] ?? (1 + i);
-  }
-
-  // synthetic data generator (same pattern as earlier demo, but tuned)
-  function genData(n=3000){
-    const X=[]; const Y=[];
-    for(let i=0;i<n;i++){
-      const base = Math.floor(Math.random()*RESULTS.length);
-      const spike = Math.random()<0.06;
-      const trendUp = Math.random()<0.46;
-      const prev = Math.max(0, Math.min(RESULTS.length-1, base + (trendUp? -1:1) + Math.floor((Math.random()-0.5)*2)));
-      const second = Math.max(0, Math.min(RESULTS.length-1, prev + Math.floor((Math.random()-0.5)*3)));
-      const latest = Math.max(0, Math.min(RESULTS.length-1, second + (spike? 3 : (trendUp?1:-1)) + Math.floor((Math.random()-0.5)*2)));
-      const noise = (Math.random()-0.5)*0.28;
-      const next = idxToNum(latest) * (spike? (1 + Math.random()*1.2) : (1 + noise));
-      X.push([idxToNum(prev), idxToNum(second), idxToNum(latest)]);
-      Y.push(next);
-    }
-    return {X: tf.tensor2d(X), y: tf.tensor1d(Y)};
-  }
-
-  // build tiny model
-  function build(){
-    const m = tf.sequential();
-    m.add(tf.layers.dense({units:18,activation:'relu',inputShape:[3]}));
-    m.add(tf.layers.dense({units:12,activation:'relu'}));
-    m.add(tf.layers.dense({units:1}));
-    m.compile({optimizer: tf.train.adam(0.008), loss:'meanSquaredError'});
-    return m;
-  }
-
-  let MODEL = null; let TRAINED=false;
-
-  async function trainModel(verbose=false, epochs=25){
-    status.textContent = 'Preparing synthetic data...';
-    const data = genData(Math.max(1200, Math.min(4000, epochs*140)));
-    const m = build();
-    status.textContent = 'Training model (demo)...';
-    await m.fit(data.X, data.y, {
-      epochs,
-      batchSize:64,
-      shuffle:true,
-      callbacks:{
-        onEpochEnd: (ep,logs)=>{ if(verbose) status.textContent = `Training: epoch ${ep+1} loss ${logs.loss.toFixed(4)}`;}
-      }
-    });
-    data.X.dispose(); data.y.dispose();
-    if(MODEL){ try{ MODEL.dispose(); }catch(e){} }
-    MODEL = m; TRAINED = true;
-    modelReadyLabel.textContent = 'ready (sure)';
-    status.textContent = 'Model ready (Sure).';
-  }
-
-  // map numeric back to nearest range + confidence heuristic
-  function mapToRange(num){
-    let best=0,bd=Infinity;
-    for(let i=0;i<RESULTS.length;i++){
-      const d = Math.abs(num - idxToNum(i));
-      if(d<bd){ bd=d; best=i; bd=d; }
-    }
-    // compute confidence (demo heuristic)
-    const conf = Math.max(28, Math.min(94, Math.round(94 - bd*8)));
-    return {label:RESULTS[best], conf, raw:num};
-  }
-
-  // run prediction given indexes
-  async function predict(i1,i2,i3){
-    saveLast(i1,i2,i3);
-    if(!TRAINED){
-      await trainModel(true, 22);
-    }
-    const inp = tf.tensor2d([[idxToNum(i1), idxToNum(i2), idxToNum(i3)]]);
-    const predT = MODEL.predict(inp);
-    const val = (await predT.data())[0];
-    inp.dispose(); predT.dispose();
-    return mapToRange(val);
-  }
-
-  // UI helpers
-  function log(msg){ const t = new Date().toLocaleTimeString(); logEl.insertAdjacentHTML('afterbegin', `<div>[${t}] ${msg}</div>`); }
-  function showResult(mapped){
-    out.innerHTML = `
-      <div class="prediction">${mapped.label}</div>
-      <div class="meta">Predicted (demo numeric): <strong>${Number(mapped.raw).toFixed(2)}x</strong></div>
-      <div class="confidence">
-        <div class="meter"><div class="meter-fill" style="width:${mapped.conf}% ; background:linear-gradient(90deg,#00D4AA,#00FF9E)"></div></div>
-        <div class="meta">Confidence (demo): ${mapped.conf}% — educational only</div>
+  <!-- Main Grid -->
+  <div class="grid">
+    
+    <!-- Prediction Panel -->
+    <div class="panel">
+      <div class="result-title">Prediction Output</div>
+      <div id="prediction-area" style="margin-top:8px">
+        <div id="status" class="meta">Model status: initializing (demo)...</div>
+        <div id="out" style="margin-top:12px"><div style="color:var(--muted)">Select last 3 results and press Predict.</div></div>
       </div>
-    `;
+      <div class="disclaimer">
+        <strong>Important:</strong> This is a simulated, educational predictor using synthetic data & in-browser model.
+      </div>
+      <div class="developer">
+        <div>Developer: <strong>SJ Checkers</strong></div>
+        <div class="contact"><div style="color:var(--muted)">Contact: SJ Checkers — WhatsApp: +256781143176</div></div>
+      </div>
+    </div>
+
+    <!-- Info Panel -->
+    <aside class="panel" style="min-width:240px">
+      <div style="display:flex; justify-content:space-between; align-items:center">
+        <div style="font-weight:700">Model Info</div>
+        <div id="model-ready" style="font-size:0.85rem;color:var(--muted)">—</div>
+      </div>
+      <div style="margin-top:8px">
+        <div class="meta">Dataset: synthetic (internal)</div>
+        <div class="meta">Model: tiny dense network (in-browser)</div>
+      </div>
+      <div style="margin-top:12px">
+        <div class="meta">Prediction log</div>
+        <div id="log" class="log" aria-live="polite"></div>
+      </div>
+    </aside>
+
+  </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.9.0/dist/tf.min.js"></script>
+<script>
+// ==== Constants ====
+const RESULTS = ["1.00X - 1.50X","1.51X - 2.00X","2.01X - 3.00X","3.01X - 4.00X","4.01X - 5.00X","5.01X - 6.00X","6.01X - 7.00X","7.01X - 8.00X","8.01X - 10.00X","10.01X - 15.00X","15.01X - 20.00X","20.01X+"];
+const sel1 = document.getElementById('result-1');
+const sel2 = document.getElementById('result-2');
+const sel3 = document.getElementById('result-3');
+const out = document.getElementById('out');
+const status = document.getElementById('status');
+const logEl = document.getElementById('log');
+const modelReadyLabel = document.getElementById('model-ready');
+const STORAGE_KEY = 'oldstudio_last3_v2';
+let MODEL = null, TRAINED=false;
+
+// ==== Populate Selectors ====
+function populateSelects(){
+  [sel1, sel2, sel3].forEach(s=>{
+    s.innerHTML='<option value="" disabled selected>SELECT</option>';
+    RESULTS.forEach((r,i)=>{ const o=document.createElement('option'); o.value=i; o.textContent=r; s.appendChild(o); });
+  });
+}
+populateSelects();
+
+// ==== Local Storage ====
+function saveLast(a,b,c){ try{ localStorage.setItem(STORAGE_KEY, JSON.stringify([a,b,c])); }catch(e){} }
+function loadLast(){ try{ const v=JSON.parse(localStorage.getItem(STORAGE_KEY)||'null'); if(Array.isArray(v)&&v.length===3) return v; }catch(e){} return null; }
+(function restore(){ const v=loadLast(); if(v){ sel1.value=v[0]; sel2.value=v[1]; sel3.value=v[2]; }})();
+
+// ==== Model Helpers ====
+function idxToNum(i){ const mids=[1.25,1.75,2.5,3.5,4.5,5.5,6.5,7.5,9.0,12.5,17.5,22.0]; return mids[i]??(1+i); }
+function genData(n=3000){
+  const X=[], Y=[];
+  for(let i=0;i<n;i++){
+    const base=Math.floor(Math.random()*RESULTS.length);
+    const spike=Math.random()<0.06;
+    const trendUp=Math.random()<0.46;
+    const prev=Math.max(0,Math.min(RESULTS.length-1, base+(trendUp?-1:1)+Math.floor((Math.random()-0.5)*2)));
+    const second=Math.max(0,Math.min(RESULTS.length-1, prev+Math.floor((Math.random()-0.5)*3)));
+    const latest=Math.max(0,Math.min(RESULTS.length-1, second+(spike?3:(trendUp?1:-1))+Math.floor((Math.random()-0.5)*2)));
+    const noise=(Math.random()-0.5)*0.28;
+    X.push([idxToNum(prev), idxToNum(second), idxToNum(latest)]);
+    Y.push(idxToNum(latest)*(spike?(1+Math.random()*1.2):(1+noise)));
   }
-
-  // form behavior
-  document.getElementById('prediction-form').addEventListener('submit', async e=>{
-    e.preventDefault();
-    const a = parseInt(sel1.value), b = parseInt(sel2.value), c = parseInt(sel3.value);
-    if(Number.isNaN(a)||Number.isNaN(b)||Number.isNaN(c)){ out.innerHTML = '<div class="meta" style="color:#ffb3b3">Please select all three ranges.</div>'; return; }
-    status.textContent = 'Running demo prediction...';
-    out.innerHTML = '<div class="meta">Analyzing (demo)...</div>';
-    try{
-      const mapped = await predict(a,b,c);
-      showResult(mapped);
-      log(`Input [${RESULTS[a]} | ${RESULTS[b]} | ${RESULTS[c]}] → ${mapped.label} (conf ${mapped.conf}%)`);
-    }catch(err){
-      out.innerHTML = '<div class="meta" style="color:#ffb3b3">Demo prediction failed.</div>';
-      console.error(err);
-    }
+  return { X: tf.tensor2d(X), y: tf.tensor1d(Y) };
+}
+function buildModel(){
+  const m=tf.sequential();
+  m.add(tf.layers.dense({units:18, activation:'relu', inputShape:[3]}));
+  m.add(tf.layers.dense({units:12, activation:'relu'}));
+  m.add(tf.layers.dense({units:1}));
+  m.compile({optimizer:tf.train.adam(0.008), loss:'meanSquaredError'});
+  return m;
+}
+async function trainModel(verbose=false, epochs=25){
+  status.textContent='Preparing synthetic data...';
+  const data=genData(Math.max(1200, Math.min(4000, epochs*140)));
+  const m=buildModel();
+  status.textContent='Training model...';
+  await m.fit(data.X, data.y, {
+    epochs, batchSize:64, shuffle:true,
+    callbacks:{ onEpochEnd:(ep,logs)=>{ if(verbose) status.textContent=`Training: epoch ${ep+1} loss ${logs.loss.toFixed(4)}`; } }
   });
+  data.X.dispose(); data.y.dispose();
+  if(MODEL){ try{ MODEL.dispose(); }catch(e){} }
+  MODEL=m; TRAINED=true;
+  modelReadyLabel.textContent='ready (sure)';
+  status.textContent='Model ready (Sure).';
+}
+function mapToRange(num){
+  let best=0, bd=Infinity;
+  for(let i=0;i<RESULTS.length;i++){
+    const d=Math.abs(num-idxToNum(i));
+    if(d<bd){ bd=d; best=i; }
+  }
+  const conf=Math.max(28,Math.min(94, Math.round(94-bd*8)));
+  return {label:RESULTS[best], conf, raw:num};
+}
+async function predict(i1,i2,i3){
+  saveLast(i1,i2,i3);
+  if(!TRAINED) await trainModel(false,22);
+  const inp=tf.tensor2d([[idxToNum(i1), idxToNum(i2), idxToNum(i3)]]);
+  const val=(await MODEL.predict(inp).data())[0];
+  inp.dispose();
+  return mapToRange(val);
+}
 
-  // retrain / reset
-  document.getElementById('retrain').addEventListener('click', async ()=>{
-    status.textContent = 'Retraining demo model...';
-    try{ await trainModel(true, 28); log('Model retrained (demo)'); }catch(e){ status.textContent = 'Retrain failed (demo)'; console.error(e); }
-  });
-  document.getElementById('reset').addEventListener('click', ()=>{
-    try{ localStorage.removeItem(KEY); }catch(e){} // KEY may be undefined in some contexts; safe ignore
-    populate(); out.innerHTML=''; status.textContent = 'Saved inputs cleared.';
-    log('Saved inputs reset');
-  });
+// ==== UI Helpers ====
+function logMsg(msg){ const t=new Date().toLocaleTimeString(); logEl.insertAdjacentHTML('afterbegin',`<div>[${t}] ${msg}</div>`); }
+function showResult(mapped){
+  out.innerHTML=`<div class="prediction">${mapped.label}</div>
+  <div class="meta">Predicted (demo numeric): <strong>${Number(mapped.raw).toFixed(2)}x</strong></div>
+  <div class="confidence">
+    <div class="meter"><div class="meter-fill" style="width:${mapped.conf}%; background:linear-gradient(90deg,#00D4AA,#00FF9E)"></div></div>
+    <div class="meta">Confidence (demo): ${mapped.conf}% — educational only</div>
+  </div>`;
+}
 
-  // background pretrain (non-blocking)
-  (async function background(){
-    try{
-      await new Promise(r=>setTimeout(r,600));
-      if(!TRAINED){ await trainModel(false,12); log('Background model pre-trained'); }
-    }catch(e){ console.warn('Background train failed', e); status.textContent = 'Model not trained. Use Retrain or Predict.'; }
-  })();
+// ==== Event Listeners ====
+document.getElementById('prediction-form').addEventListener('submit', async e=>{
+  e.preventDefault();
+  const a=parseInt(sel1.value), b=parseInt(sel2.value), c=parseInt(sel3.value);
+  if([a,b,c].some(v=>isNaN(v))){ out.innerHTML='<div class="meta" style="color:#ffb3b3">Please select all three ranges.</div>'; return; }
+  status.textContent='Running demo prediction...';
+  out.innerHTML='<div class="meta">Analyzing (demo)...</div>';
+  try{
+    const mapped=await predict(a,b,c);
+    showResult(mapped);
+    logMsg(`Input [${RESULTS[a]} | ${RESULTS[b]} | ${RESULTS[c]}] → ${mapped.label} (conf ${mapped.conf}%)`);
+  }catch(err){
+    out.innerHTML='<div class="meta" style="color:#ffb3b3">Demo prediction failed.</div>';
+    console.error(err);
+  }
+});
+document.getElementById('retrain').addEventListener('click', async ()=>{
+  status.textContent='Retraining demo model...';
+  try{ await trainModel(true,28); logMsg('Model retrained (demo)'); }catch(e){ status.textContent='Retrain failed (demo)'; console.error(e);}
+});
+document.getElementById('reset').addEventListener('click', ()=>{
+  try{ localStorage.removeItem(STORAGE_KEY); }catch(e){}
+  populateSelects(); out.innerHTML=''; status.textContent='Saved inputs cleared.';
+  logMsg('Saved inputs reset');
+});
 
-  // expose small note to user about adding contact
-  log('Demo ready. Developer credit: SJ Checkers. 
+// ==== Background Training ====
+(async function(){ try{ await new Promise(r=>setTimeout(r,600)); if(!TRAINED) await trainModel(false,12); logMsg('Background model pre-trained'); }catch(e){ console.warn(e); status.textContent='Model not trained. Use Retrain or Predict.';} })();
 
-  </script>
+logMsg('Demo ready. Developer credit: SJ Checkers.');
+</script>
 </body>
-                                                                               </html>
+          </html>
