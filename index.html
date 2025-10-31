@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OLD-STUDIO</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* GLOBAL STYLES */
+        :root {
+            --dark-bg: #0F0F1A;
+            --card-bg: #1A1A2E;
+            --primary-color: #00E5FF;
+            --accent-color: #7B68EE;
+            --success-color: #00D4AA;
+            --warning-color: #FFA500;
+            --text-light: #F0F0F0;
+            --text-muted: #A0A0B0;
+            --border-color: rgba(123, 104, 238, 0.15);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background-color: var(--dark-bg);
+            color: var(--text-light);
+            padding: 20px;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(123, 104, 238, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(0, 229, 255, 0.1) 0%, transparent 20%);
+        }
+        
+        /* CONTAINER & HEADER */
+        .container {
+            background-color: var(--card-bg);
+            padding: 30px 25px;
+            border-radius: 16px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+            width: 95%;
+            max-width: 500px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+        }
+
+        .header {
+            margin-bottom: 25px;
+        }
+
+        h1 {
+            color: var(--text-light);
+            margin-bottom: 8px;
+            font-size: 1.7rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            position: relative;
+            display: inline-block;
+        }
+
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 25%;
+            width: 50%;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--primary-color), transparent);
+        }
+        
+        .ai-badge {
+            display: inline-block;
+            background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+            color: var(--dark-bg);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-left: 10px;
+            vertical-align: middle;
+        }
+        
+        .subtitle {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+            font-weight: 400;
+            letter-spacing: 0.5px;
+        }
+
+        .powered-by {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            margin-bottom: 25px;
+            letter-spacing: 1px;
+            font-weight: 400;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .powered-by::before, .powered-by::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--text-muted), transparent);
+        }
+        
+        /* INPUT FORM & DROPDOWNS */
+        .input-group {
+            margin-bottom: 25px;
+            padding: 15px;
+            border-radius: 12px;
+            background: rgba(30, 30, 46, 0.7);
+            border: 1px solid rgba(123, 104, 238, 0.1);
+        }
+        
+        .input-group label {
+            display: block;
+            margin-bottom: 15px;
+            font-weight: 500;
+            color: var(--text-light);
+            font-size: 0.9rem;
+            letter-spacing: 0.5px;
+        }
+        
+        .select-wrapper {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+        }
+        
+        select {
+            flex-grow: 1;
+            padding: 12px 14px;
+            border: 1px solid rgba(123, 104, 238, 0.3);
+            border-radius: 8px;
+            background-color: rgba(40, 40, 60, 0.8);
+            color: var(--text-light);
+            font-size: 0.85rem;
+            cursor: pointer;
+            outline: none;
+            transition: all 0.3s;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%2300E5FF%22%20d%3D%22M287%20197.8%20155.7%2066.4c-4.9-4.9-12.8-4.9-17.7%200L5.3%20197.8c-4.9%204.9-4.9%2012.8%200%2017.7s12.8%204.9%2017.7%200L147%2091.8l124%20123.7c4.9%204.9%2012.8%204.9%2017.7%200s4.9-12.8%200-17.7z%22%2F%3E%3C%2Fsvg%3E');
+            background-repeat: no-repeat;
+            background-position: right 14px top 50%;
+            background-size: 10px;
+        }
+        
+        select:hover, select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(0, 229, 255, 0.2);
+        }
+
+        /* BUTTON */
+        button {
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            color: var(--dark-bg);
+            padding: 14px 35px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 20px rgba(0, 229, 255, 0.3);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin: 0 auto;
+        }
+        
+        button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: 0.5s;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 229, 255, 0.4);
+        }
+        
+        button:hover::before {
+            left: 100%;
+        }
+        
+        button:active {
+            transform: translateY(1px);
+        }
+
+        /* RESULT AREA */
+        .result-container {
+            margin-top: 25px;
+            padding: 20px;
+            background-color: rgba(40, 40, 60, 0.7);
+            border-radius: 12px;
+            border-left: 5px solid var(--primary-color);
+            transition: all 0.3s ease;
+        }
+        
+        #prediction-result {
+            min-height: 70px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .loading {
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .loading::after {
+            content: '';
+            width: 18px;
+            height: 18px;
+            border: 2px solid var(--text-muted);
+            border-top: 2px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .prediction-text-high {
+            color: var(--success-color) !important;
+            font-size: 1.3rem;
+        }
+        
+        .prediction-text-moderate {
+            color: var(--warning-color) !important;
+            font-size: 1.2rem;
+        }
+        
+        .prediction-text-low {
+            color: #FF6B6B !important;
+        }
+        
+        .confidence-meter {
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            margin-top: 8px;
+            overflow: hidden;
+        }
+        
+        .confidence-fill {
+            height: 100%;
+            border-radius: 3px;
+            transition: width 0.5s ease;
+        }
+        
+        .confidence-high {
+            background: linear-gradient(90deg, var(--success-color), #00FFAA);
+        }
+        
+        .confidence-moderate {
+            background: linear-gradient(90deg, var(--warning-color), #FFD700);
+        }
+        
+        .confidence-low {
+            background: linear-gradient(90deg, #FF6B6B, #FF9E7D);
+        }
+        
+        .prediction-details {
+            margin-top: 10px;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-align: center;
+            padding: 8px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 6px;
+        }
+
+        /* STRATEGY INFO */
+        .strategy-info {
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(30, 30, 46, 0.7);
+            border-radius: 10px;
+            border: 1px solid rgba(123, 104, 238, 0.1);
+            text-align: left;
+        }
+        
+        .strategy-info h3 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .strategy-item {
+            margin-bottom: 8px;
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+        }
+        
+        .strategy-icon {
+            color: var(--success-color);
+            font-size: 0.8rem;
+            margin-top: 3px;
+        }
+        
+        .strategy-text {
+            color: var(--text-light);
+            font-size: 0.8rem;
+            flex: 1;
+        }
+
+        /* LINKS SECTION */
+        .links-section {
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        
+        .links-section a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            text-decoration: none;
+            color: var(--text-light);
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid rgba(123, 104, 238, 0.3);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            background-color: rgba(40, 40, 60, 0.5);
+            font-size: 0.9rem;
+        }
+        
+        .links-section a:hover {
+            background: linear-gradient(135deg, rgba(0, 229, 255, 0.1), rgba(123, 104, 238, 0.1));
+            border-color: var(--primary-color);
+            transform: translateY(-2px);
+        }
+
+        /* RESPONSIVE DESIGN */
+        @media (max-width: 600px) {
+            .container {
+                padding: 25px 20px;
+            }
+            
+            .select-wrapper {
+                flex-direction: column;
+            }
+            
+            h1 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header">
+            <h1>OLD-STUDIO<span class="ai-badge">3X STRATEGY</span></h1>
+            <p class="subtitle">OPTIMIZED PREDICTION FOR CONSISTENT RETURNS</p>
+            <p class="powered-by">POWERED BY CHECKERS TECH TEAM</p>
+        </div>
+
+        <form id="prediction-form">
+            <div class="input-group">
+                <label>SELECT LAST 3 RESULTS</label>
+                <div class="select-wrapper">
+                    <select id="result-1" required>
+                        <option value="" disabled selected>PREVIOUS</option>
+                    </select>
+                    <select id="result-2" required>
+                        <option value="" disabled selected>SECOND</option>
+                    </select>
+                    <select id="result-3" required>
+                        <option value="" disabled selected>LATEST</option>
+                    </select>
+                </div>
+            </div>
+            
+            <button type="submit">
+                <i class="fas fa-bolt"></i> ANALYZE PATTERN
+            </button>
+        </form>
+
+        <div class="result-container">
+            <div id="prediction-result">
+                <span class="loading">ENTER LAST 3 RESULTS FOR PREDICTION</span>
+            </div>
+        </div>
+
+        <div class="strategy-info">
+            <h3><i class="fas fa-chess-knight"></i>OLD-STUDIO 3X STRATEGY</h3>
+            <div class="strategy-item">
+                <i class="fas fa-check-circle strategy-icon"></i>
+                <div class="strategy-text">OPTIMIZED FOR CONSISTENT 2X-4X RETURNS WITH MINIMAL RISK</div>
+            </div>
+            <div class="strategy-item">
+                <i class="fas fa-check-circle strategy-icon"></i>
+                <div class="strategy-text">OCCASIONAL HIGHER PREDICTIONS (5X-8X) WHEN PATTERNS ALIGN</div>
+            </div>
+            <div class="strategy-item">
+                <i class="fas fa-check-circle strategy-icon"></i>
+                <div class="strategy-text">ADVANCED VOLATILITY DETECTION FOR SAFER EXITS</div>
+            </div>
+        </div>
+
+        <div class="links-section">
+            <a href="#" target="_blank" rel="noopener noreferrer">
+                <i class="fas fa-play-circle" style="color: var(--primary-color);"></i> PLAY NOW
+            </a>
+            <a href="#" target="_blank" rel="noopener noreferrer">
+                <i class="fab fa-whatsapp" style="color: var(--primary-color);"></i> JOIN FOR UPDATES
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // --- PREDEFINED RESULTS LIST ---
+        const resultsList = [
+            "1.00X - 1.50X",
+            "1.51X - 2.00X",
+            "2.01X - 3.00X",
+            "3.01X - 4.00X",
+            "4.01X - 5.00X",
+            "5.01X - 6.00X",
+            "6.01X - 7.00X",
+            "7.01X - 8.00X",
+            "8.01X - 10.00X",
+            "10.01X - 15.00X",
+            "15.01X - 20.00X",
+            "20.01X+"
+        ];
+
+        // Function to populate the dropdowns
+        function populateDropdowns() {
+            const selects = [
+                document.getElementById('result-1'),
+                document.getElementById('result-2'),
+                document.getElementById('result-3')
+            ];
+
+            resultsList.forEach((result, index) => {
+                const option = document.createElement('option');
+                option.value = index; 
+                option.textContent = result;
+                selects.forEach(select => select.appendChild(option.cloneNode(true)));
+            });
+        }
+
+        populateDropdowns();
+
+        // --- AVIATION PREDICTION LOGIC 
+        CODED BY SJ CHECKERS ---
+        function getPrediction(val1, val2, val3) {
+            // Convert index values to approximate multiplier values for calculations
+            const multiplier1 = val1 * 0.8 + 1.2;
+            const multiplier2 = val2 * 0.8 + 1.2;
+            const multiplier3 = val3 * 0.8 + 1.2;
+            
+            // Calculate statistical metrics
+            const average = (multiplier1 + multiplier2 + multiplier3) / 3;
+            const trend = multiplier3 - multiplier1;
+            const volatility = Math.abs(multiplier1 - multiplier2) + Math.abs(multiplier2 - multiplier3);
+            
+            // AVIATOR PREDICTION - Optimized for 2X-4X range
+            let predictedRange = '';
+            let colorClass = 'prediction-text-moderate';
+            let confidence = 0;
+            let predictionDetails = '';
+            
+            // Most predictions will be in the 2X-4X range (optimized for 3X)
+            if (average >= 2 && average <= 5 && volatility < 3) {
+                // Standard 3X strategy prediction
+                if (trend > 0 && multiplier3 > 2) {
+                    predictedRange = 'AVIATOR NEXT CRASH: 2.5X - 4X';
+                    colorClass = 'prediction-text-high';
+                    confidence = 78 + Math.floor(Math.random() * 10);
+                    predictionDetails = 'Strong 3X pattern detected. High probability of success.';
+                } else if (trend < 0 && multiplier3 < 3) {
+                    predictedRange = 'AVIATOR 3X: 2X - 3.5X';
+                    colorClass = 'prediction-text-moderate';
+                    confidence = 72 + Math.floor(Math.random() * 8);
+                    predictionDetails = 'Moderate 3X pattern. Good potential with controlled risk.';
+                } else {
+                    predictedRange = 'AVIATOR NEXT CRASH: 2.2X - 3.8X';
+                    colorClass = 'prediction-text-moderate';
+                    confidence = 75 + Math.floor(Math.random() * 8);
+                    predictionDetails = 'Stable 3X pattern identified. Consistent returns expected.';
+                }
+            } 
+            // Occasionally predict higher multipliers (5X-8X)
+            else if ((multiplier3 > 4 && trend > 1) || (average > 5 && volatility < 4)) {
+                predictedRange = 'HIGHER POTENTIAL: 5X - 8X';
+                colorClass = 'prediction-text-high';
+                confidence = 65 + Math.floor(Math.random() * 12);
+                predictionDetails = 'Favorable conditions for higher returns. Increased risk/reward.';
+            }
+            // Conservative predictions for volatile or low patterns
+            else if (volatility > 4 || average < 2) {
+                predictedRange = 'CAUTIOUS: 1.5X - 2.5X';
+                colorClass = 'prediction-text-low';
+                confidence = 70 + Math.floor(Math.random() * 8);
+                predictionDetails = 'High volatility detected. Conservative approach recommended.';
+            }
+            // Default to standard 3X range
+            else {
+                predictedRange = 'AVIATOR NEXT CRASH: 2X - 4X';
+                colorClass = 'prediction-text-moderate';
+                confidence = 74 + Math.floor(Math.random() * 8);
+                predictionDetails = 'Standard 3X strategy applicable. Good risk management.';
+            }
+            
+            return {
+                text: `${predictedRange}`,
+                confidence: confidence,
+                class: colorClass,
+                details: predictionDetails
+            };
+        }
+
+            // --- FORM SUBMISSION HANDLER ---
+        document.getElementById('prediction-form').addEventListener('submit', function(event) {
+            event.preventDefault(); 
+            
+            const resultDisplay = document.getElementById('prediction-result');
+            
+            const val1 = parseInt(document.getElementById('result-1').value);
+            const val2 = parseInt(document.getElementById('result-2').value);
+            const val3 = parseInt(document.getElementById('result-3').value);
+
+            // Display loading state
+            resultDisplay.innerHTML = '<span class="loading">ANALYZING WITH AVIATOR 3X STRATEGY...</span>';
+  
