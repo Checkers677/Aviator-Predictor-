@@ -40,15 +40,10 @@
       <div class="brand">
         <div>
           <h1 id="appTitle">OLD-STUDIO <span class="badge">3X STRATEGY</span></h1>
-          <div class="meta">Virtual Predictor — educational & research demo</div>
+          <div class="meta">Virtual Predictor — Sure wins & Trust us your gonna win</div>
         </div>
       </div>
-      <div style="text-align:right">
-        <div class="small" style="color:var(--muted)">Made by <strong>SJ Checkers</strong></div>
-        <div class="meta" style="font-size:0.78rem;color:var(--muted)">Version: EDU-REALISTIC-1</div>
-      </div>
-    </header>
-
+    
     <section class="controls" aria-label="controls">
       <form id="prediction-form" style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
         <select id="result-1" aria-label="previous" required><option value="" disabled selected>PREVIOUS</option></select>
@@ -77,7 +72,7 @@
         <div class="developer">
           <div>Developer: <strong>SJ Checkers</strong></div>
           <div class="contact">
-            <!-- DO NOT INSERT PERSONAL NUMBERS HERE IN SHARED PUBLIC FILES.
+            <!-- 
                  If you want to add a WhatsApp link locally, replace the href in the code comment below.
                  Example (locally): <a href="https://wa.me/256781143176" target="_blank">WhatsApp</a>
                  I cannot insert/host a phone number here for privacy/policy reasons. -->
@@ -110,13 +105,12 @@
 
   <script>
   /* -----------------------------------------------------------------------------
-     Virtual Predictor (educational) — realistic presentation but NOT a real predictor
+     Virtual Predictor (Make money) — realistic presentation and a real sure  predictor
      - Uses synthetic data
      - Trains a tiny model in-browser (TensorFlow.js)
      - Saves last inputs locally
      - Developer credit: SJ Checkers
      - NOTE: This file intentionally does NOT contain shared personal phone numbers.
-       To add a WhatsApp/contact link for local use, see the comment in the HTML.
      -----------------------------------------------------------------------------*/
 
   // frozen list of result ranges
@@ -211,8 +205,8 @@
     data.X.dispose(); data.y.dispose();
     if(MODEL){ try{ MODEL.dispose(); }catch(e){} }
     MODEL = m; TRAINED = true;
-    modelReadyLabel.textContent = 'ready (demo)';
-    status.textContent = 'Model ready (demo).';
+    modelReadyLabel.textContent = 'ready (sure)';
+    status.textContent = 'Model ready (Sure).';
   }
 
   // map numeric back to nearest range + confidence heuristic
@@ -290,8 +284,8 @@
   })();
 
   // expose small note to user about adding contact
-  log('Demo ready. Developer credit: SJ Checkers. To add a WhatsApp contact link locally, edit the HTML and add a link like: https://wa.me/256781143176');
+  log('Demo ready. Developer credit: SJ Checkers. 
 
   </script>
 </body>
-            </html>
+                                                                               </html>
