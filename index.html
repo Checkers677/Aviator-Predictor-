@@ -85,15 +85,15 @@ select {
     <div class="panel">
       <div class="result-title">Prediction Output</div>
       <div id="prediction-area" style="margin-top:8px">
-        <div id="status" class="meta">Model status: initializing (demo)...</div>
+        <div id="status" class="meta">Model status: initializing (Sure win)...</div>
         <div id="out" style="margin-top:12px"><div style="color:var(--muted)">Select last 3 results and press Predict.</div></div>
       </div>
       <div class="disclaimer">
-        <strong>Important:</strong> This is a simulated, educational predictor using synthetic data & in-browser model.
+        <strong>Important:</strong> This is a simulated, Virtual sure win predictor using synthetic data & in-browser model.
       </div>
       <div class="developer">
         <div>Developer: <strong>SJ Checkers</strong></div>
-        <div class="contact"><div style="color:var(--muted)">Contact: SJ Checkers — WhatsApp: +256781143176</div></div>
+        <div class="contact"><div style="color:var(--muted)">Contact: SJ Checkers — WhatsApp: https://wa.me256781143176</div></div>
       </div>
     </div>
 
@@ -206,7 +206,7 @@ async function predict(i1,i2,i3){
 function logMsg(msg){ const t=new Date().toLocaleTimeString(); logEl.insertAdjacentHTML('afterbegin',`<div>[${t}] ${msg}</div>`); }
 function showResult(mapped){
   out.innerHTML=`<div class="prediction">${mapped.label}</div>
-  <div class="meta">Predicted (demo numeric): <strong>${Number(mapped.raw).toFixed(2)}x</strong></div>
+  <div class="meta">Predicted (Sure numeric): <strong>${Number(mapped.raw).toFixed(2)}x</strong></div>
   <div class="confidence">
     <div class="meter"><div class="meter-fill" style="width:${mapped.conf}%; background:linear-gradient(90deg,#00D4AA,#00FF9E)"></div></div>
     <div class="meta">Confidence (demo): ${mapped.conf}% — educational only</div>
@@ -218,7 +218,7 @@ document.getElementById('prediction-form').addEventListener('submit', async e=>{
   e.preventDefault();
   const a=parseInt(sel1.value), b=parseInt(sel2.value), c=parseInt(sel3.value);
   if([a,b,c].some(v=>isNaN(v))){ out.innerHTML='<div class="meta" style="color:#ffb3b3">Please select all three ranges.</div>'; return; }
-  status.textContent='Running demo prediction...';
+  status.textContent='Running Sure prediction...';
   out.innerHTML='<div class="meta">Analyzing (demo)...</div>';
   try{
     const mapped=await predict(a,b,c);
@@ -240,9 +240,14 @@ document.getElementById('reset').addEventListener('click', ()=>{
 });
 
 // ==== Background Training ====
-(async function(){ try{ await new Promise(r=>setTimeout(r,600)); if(!TRAINED) await trainModel(false,12); logMsg('Background model pre-trained'); }catch(e){ console.warn(e); status.textContent='Model not trained. Use Retrain or Predict.';} })();
+(async function(){ try{ await new Promise(r=>setTimeout(r,600)); if(!TRAINED) await trainModel(false,12); logMsg('Background model pre-trained'); }catch(e){ console.warn(e); status.textContent='Model not trained. Use Win Today or Predict.';} })();
 
-logMsg('Demo ready. Developer credit: SJ Checkers.');
+logMsg('Sure Win ready. Developer credit: SJ Checkers.');
+  <a href="https://whatsapp.com/channel/0029VbApq2W47XeDhGHqYR18" target="_blank">
+  <button style="padding:10px 20px; background-color:#25D366; color:white; border:none; border-radius:5px; cursor:pointer;">
+    Join Our WhatsApp Channel
+  </button>
+</a>
 </script>
 </body>
           </html>
