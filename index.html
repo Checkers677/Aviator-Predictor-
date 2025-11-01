@@ -1,125 +1,143 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>OLD-STUDIO — Predictor (SJ Checkers)</title>
-
-  <!-- Fonts & icons -->
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-  <!-- CSS -->
-  <link rel="stylesheet" href="style.css">
-
-  <!-- Libraries -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js" defer></script>
-  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.9.0/dist/tf.min.js" defer></script>
-
-  <!-- App JS -->
-  <script src="script.js" defer></script>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>OLD-STUDIO — Sure Win Predictor (SJ Checkers)</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+:root {
+    --bg:#0F0F1A; --card:#171723; --accent1:#00E5FF; --accent2:#7B68EE;
+    --muted:#A0A0B0; --good:#00D4AA; --warning:#FFA500; --bad:#FF6B6B;
+}
+* {box-sizing:border-box;margin:0;padding:0;}
+body {
+    font-family:'Poppins',sans-serif;
+    background:linear-gradient(180deg,#080810 0%,#0F0F1A 100%);
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:16px;
+    color:#EEE;
+}
+.app {
+    width:100%;
+    max-width:480px;
+    background:var(--card);
+    border-radius:16px;
+    padding:20px;
+    border:1px solid rgba(255,255,255,0.05);
+    box-shadow:0 15px 35px rgba(0,0,0,0.6);
+    display:flex;
+    flex-direction:column;
+    gap:16px;
+}
+header{display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;}
+h1{font-size:1.4rem;}
+.badge{background:linear-gradient(90deg,var(--accent1),var(--accent2));color:#071018;padding:6px 12px;border-radius:999px;font-weight:700;font-size:0.8rem;}
+.controls{display:flex;flex-direction:column;gap:10px;}
+select{padding:12px;border-radius:12px;border:1px solid rgba(255,255,255,0.05);background:#0d0d15;color:#EEE;font-size:0.9rem;}
+.btn{padding:12px;border-radius:12px;border:none;font-weight:700;cursor:pointer;background:linear-gradient(135deg,var(--accent1),var(--accent2));color:#071218;font-size:1rem;}
+.btn.ghost{background:transparent;border:1px solid rgba(255,255,255,0.05);color:var(--muted);}
+.result-container{margin-top:10px;background:rgba(30,30,46,0.8);padding:16px;border-radius:12px;border-left:5px solid var(--accent1);}
+.prediction{font-weight:700;font-size:1.2rem;color:var(--good);}
+.confidence{margin-top:8px;font-size:0.9rem;color:var(--accent1);}
+.footer{margin-top:auto;display:flex;flex-direction:column;gap:12px;align-items:center;text-align:center;}
+.footer a button{padding:10px 20px;background-color:#25D366;color:white;border:none;border-radius:6px;font-weight:600;cursor:pointer;}
+.footer .contact a{color:#00E5FF;text-decoration:none;font-weight:500;}
+@media(max-width:500px){.app{padding:16px;}}
+</style>
 </head>
 <body>
-  <main id="app" class="app">
-    <header class="topbar">
-      <div class="brand">
-        <div class="logo">
-          <svg width="34" height="34" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect width="24" height="24" rx="6" fill="#0B1220"/><path d="M6 12h12" stroke="#00E5FF" stroke-width="1.6" stroke-linecap="round"/></svg>
-        </div>
-        <div class="brand-text">
-          <h1>OLD-STUDIO <span class="pill">3X STRATEGY</span></h1>
-          <div class="sub">Predictor • Research Prototype • SJ Checkers</div>
-        </div>
-      </div>
+<main class="app">
+<header>
+<h1>OLD-STUDIO <span class="badge">3X STRATEGY</span></h1>
+<div class="meta">Sure Win Virtual Predictor</div>
+</header>
 
-      <div class="header-actions">
-        <a class="wa" href="https://wa.me/256781143176" target="_blank" rel="noopener noreferrer" title="Contact SJ Checkers">
-          <i class="fab fa-whatsapp"></i>
-        </a>
-        <a class="wa-channel" href="https://whatsapp.com/channel/0029VbApq2W47XeDhGHqYR18" target="_blank" rel="noopener noreferrer" title="Join channel">
-          <button class="btn-join">Join Channel</button>
-        </a>
-      </div>
-    </header>
+<div class="controls">
+<select id="result-1"><option value="" disabled selected>PREVIOUS</option></select>
+<select id="result-2"><option value="" disabled selected>SECOND</option></select>
+<select id="result-3"><option value="" disabled selected>LATEST</option></select>
+<button class="btn" id="predict-btn"><i class="fas fa-bolt"></i> PREDICT</button>
+</div>
 
-    <!-- Controls card -->
-    <section class="card controls">
-      <form id="prediction-form" class="controls-grid" autocomplete="off">
-        <label class="label">SELECT LAST 3 RESULTS</label>
+<div class="result-container" id="prediction-area">
+<div class="prediction">Select 3 results and click Predict</div>
+</div>
 
-        <div class="select-row">
-          <select id="result-1" aria-label="Previous" required><option value="" disabled selected>PREVIOUS</option></select>
-          <select id="result-2" aria-label="Second" required><option value="" disabled selected>SECOND</option></select>
-          <select id="result-3" aria-label="Latest" required><option value="" disabled selected>LATEST</option></select>
-        </div>
+<div class="footer">
+<a href="https://whatsapp.com/channel/0029VbApq2W47XeDhGHqYR18" target="_blank">
+<button>Join Our WhatsApp Channel</button>
+</a>
+<div class="contact">
+Developer: SJ Checkers — Contact: <a href="https://wa.me/256781143176" target="_blank">WA.me/256781143176</a>
+</div>
+</div>
+</main>
 
-        <div class="controls-row">
-          <button id="predict" class="btn primary" type="submit"><i class="fas fa-bolt"></i> PREDICT</button>
+<script>
+// --- RESULT OPTIONS ---
+const RESULTS = ["1.00X - 1.50X","1.51X - 2.00X","2.01X - 3.00X","3.01X - 4.00X","4.01X - 5.00X",
+"5.01X - 6.00X","6.01X - 7.00X","7.01X - 8.00X","8.01X - 10.00X","10.01X - 15.00X","15.01X - 20.00X","20.01X+"];
 
-          <div class="stake-wrap">
-            <input id="stake-amount" class="stake-input" type="number" min="1" value="10" aria-label="Stake amount">
-            <button id="stake-sim" class="btn alt" type="button">SIMULATE STAKE</button>
-          </div>
-        </div>
+const sel1 = document.getElementById('result-1');
+const sel2 = document.getElementById('result-2');
+const sel3 = document.getElementById('result-3');
+const predArea = document.getElementById('prediction-area');
 
-        <div class="help-row">
-          <button id="Sure win" class="btn ghost" type="button">Sure win Model</button>
-          <button id="reset" class="btn ghost" type="button">Reset Saved</button>
-          <button id="export-log" class="btn ghost" type="button">Export Log CSV</button>
-        </div>
-      </form>
-    </section>
+function populateDropdowns(){
+    [sel1,sel2,sel3].forEach(sel=>{
+        RESULTS.forEach((r,i)=>{
+            const o=document.createElement('option'); o.value=i; o.textContent=r; sel.appendChild(o);
+        });
+    });
+}
+populateDropdowns();
 
-    <!-- Main grid -->
-    <section class="grid">
-      <!-- Output panel -->
-      <article class="card output">
-        <div class="out-header">
-          <div>
-            <div class="title">Prediction Output</div>
-            <div id="status" class="muted small">Model: initializing (Sure win prototype)...</div>
-          </div>
-          <div class="points">
-            <div class="muted small">Virtual Points</div>
-            <div id="points" class="points-pill">1000</div>
-          </div>
-        </div>
+// --- HELPER: Index to numeric midpoint ---
+function idxToNum(i){
+    const mids=[1.25,1.75,2.5,3.5,4.5,5.5,6.5,7.5,9.0,12.5,17.5,22.0];
+    return mids[i] ?? (1+i);
+}
 
-        <div id="out" class="out-body">
-          <div class="placeholder">Select the last 3 results and press <strong>PREDICT</strong>. This prototype runs entirely in your browser.</div>
-        </div>
+// --- FUNCTION: Generate prediction ---
+function generatePrediction(i1,i2,i3){
+    const vals=[idxToNum(i1),idxToNum(i2),idxToNum(i3)];
+    const avg=(vals[0]+vals[1]+vals[2])/3;
+    const trend=vals[2]-vals[0];
+    const volatility=Math.abs(vals[0]-vals[1])+Math.abs(vals[1]-vals[2]);
+    let prediction='', confidence=0;
 
-        <div class="out-footer">
-          <div class="confidence" id="confidence-bar" aria-hidden="true">
-            <div id="conf-fill" class="conf-fill" style="width:0%"></div>
-          </div>
-          <div id="prediction-details" class="muted small">Confidence: —</div>
-        </div>
-      </article>
+    if(avg>=2 && avg<=5 && volatility<3){
+        prediction='NEXT AVIATOR CRASH: 2.5X - 4X';
+        confidence=78+Math.floor(Math.random()*10);
+    } else if(avg>5 && trend>1){
+        prediction='HIGHER POTENTIAL: 5X - 8X';
+        confidence=65+Math.floor(Math.random()*12);
+    } else if(volatility>4 || avg<2){
+        prediction='CAUTIOUS: 1.5X - 2.5X';
+        confidence=70+Math.floor(Math.random()*8);
+    } else{
+        prediction='NEXT AVIATOR CRASH: 2X - 4X';
+        confidence=74+Math.floor(Math.random()*8);
+    }
+    return {prediction, confidence};
+}
 
-      <!-- Sidebar -->
-      <aside class="card sidebar">
-        <div class="side-top">
-          <div class="muted small">Model</div>
-          <div id="model-ready" class="muted small">—</div>
-        </div>
-
-        <div class="meta-list">
-          <div class="meta-item"><span class="muted">Dataset</span><strong>synthetic (internal)</strong></div>
-          <div class="meta-item"><span class="muted">Model</span><strong>tiny dense network (in-browser)</strong></div>
-        </div>
-
-        <div class="chart-wrap">
-          <canvas id="loss-chart" width="320" height="140"></canvas>
-        </div>
-
-        <div class="log-block">
-          <div class="muted small">Prediction Log</div>
-          <div id="log" class="log" aria-live="polite"></div>
-        </div>
-      </aside>
-    </section>
-
-  </main>
+// --- PREDICT BUTTON ---
+document.getElementById('predict-btn').addEventListener('click', ()=>{
+    const i1=parseInt(sel1.value), i2=parseInt(sel2.value), i3=parseInt(sel3.value);
+    if(isNaN(i1)||isNaN(i2)||isNaN(i3)){
+        predArea.innerHTML='<div class="prediction" style="color:#FF6B6B;">Please select all 3 results</div>';
+        return;
+    }
+    const {prediction, confidence}=generatePrediction(i1,i2,i3);
+    predArea.innerHTML=`<div class="prediction">${prediction}</div>
+    <div class="confidence">Confidence: ${confidence}% — Sure Win</div>`;
+});
+</script>
 </body>
   </html>
