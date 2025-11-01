@@ -6,51 +6,63 @@
 <title>OLD-STUDIO — Virtual Predictor (SJ Checkers)</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
 <style>
 :root {
-  --bg:#0F0F1A; --card:#171723; --accent1:#00E5FF; --accent2:#7B68EE; 
+  --bg:#0F0F1A; --card:#171723; --accent1:#00E5FF; --accent2:#7B68EE;
   --muted:#A0A0B0; --good:#00D4AA; --bad:#FF6B6B;
 }
-* { box-sizing:border-box; margin:0; padding:0; }
-body {
-  font-family:'Poppins',sans-serif; background:linear-gradient(180deg,#080810 0%,#0F0F1A 100%);
-  min-height:100vh; display:flex; justify-content:center; align-items:center; padding:18px; color:#EEE;
+*{box-sizing:border-box;margin:0;padding:0;}
+body{
+  font-family:'Poppins',sans-serif;
+  background:linear-gradient(180deg,#080810 0%,#0F0F1A 100%);
+  min-height:100vh;display:flex;justify-content:center;align-items:center;
+  padding:18px;color:#EEE;
 }
-.app {
-  width:100%; max-width:820px; background:var(--card); border-radius:14px;
-  padding:20px; border:1px solid rgba(255,255,255,0.03); box-shadow:0 10px 30px rgba(0,0,0,0.6);
+.app{
+  width:100%;max-width:820px;background:var(--card);
+  border-radius:14px;padding:20px;
+  border:1px solid rgba(255,255,255,0.03);
+  box-shadow:0 10px 30px rgba(0,0,0,0.6);
 }
-header { display:flex; justify-content:space-between; align-items:center; gap:12px; }
-.brand h1 { font-size:1.3rem; margin:0; }
-.badge {
+header{display:flex;justify-content:space-between;align-items:center;gap:12px;}
+.brand h1{font-size:1.3rem;margin:0;}
+.badge{
   background:linear-gradient(90deg,var(--accent1),var(--accent2));
-  color:#071018; padding:6px 10px; border-radius:999px; font-weight:700; font-size:0.8rem;
+  color:#071018;padding:6px 10px;border-radius:999px;
+  font-weight:700;font-size:0.8rem;
 }
-.meta { font-size:0.85rem; color:var(--muted); margin-top:4px; }
-.controls { margin-top:16px; display:flex; flex-wrap:wrap; gap:12px; }
-select {
-  padding:10px; border-radius:10px; border:1px solid rgba(255,255,255,0.04);
-  background:#0d0d15; color:#EEE; min-width:150px;
+.meta{font-size:0.85rem;color:var(--muted);margin-top:4px;}
+.controls{margin-top:16px;display:flex;flex-wrap:wrap;gap:12px;}
+select{
+  padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);
+  background:#0d0d15;color:#EEE;min-width:150px;
 }
-.btn {
-  padding:10px 14px; border-radius:10px; border:none; font-weight:700; cursor:pointer;
-  background:linear-gradient(135deg,var(--accent1),var(--accent2)); color:#071218;
+.btn{
+  padding:10px 14px;border-radius:10px;border:none;font-weight:700;
+  cursor:pointer;background:linear-gradient(135deg,var(--accent1),var(--accent2));
+  color:#071218;
 }
-.btn.ghost { background:transparent; border:1px solid rgba(255,255,255,0.04); color:var(--muted); }
-.grid { display:grid; grid-template-columns:1fr 320px; gap:18px; margin-top:18px; }
-@media(max-width:880px){ .grid{ grid-template-columns:1fr; } }
-.panel {
+.btn.ghost{background:transparent;border:1px solid rgba(255,255,255,0.04);color:var(--muted);}
+.grid{display:grid;grid-template-columns:1fr 320px;gap:18px;margin-top:18px;}
+@media(max-width:880px){.grid{grid-template-columns:1fr;}}
+.panel{
   background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));
-  padding:14px; border-radius:10px; border:1px solid rgba(255,255,255,0.03);
+  padding:14px;border-radius:10px;border:1px solid rgba(255,255,255,0.03);
 }
-.result-title{ font-weight:700; font-size:1.05rem; }
-.prediction{ margin-top:10px; font-size:1.15rem; font-weight:800; }
-.confidence{ margin-top:10px; }
-.meter{ height:10px; background:rgba(255,255,255,0.04); border-radius:8px; overflow:hidden; }
-.meter-fill{ height:100%; width:0%; transition:width 600ms; }
-.disclaimer{ margin-top:12px; padding:10px; border-radius:8px; background:rgba(255,0,0,0.03); color:#ffdede; font-size:0.85rem; }
-.developer{ font-size:0.85rem; color:var(--muted); margin-top:12px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; }
-.log{ max-height:220px; overflow:auto; margin-top:8px; background:rgba(0,0,0,0.25); padding:8px; border-radius:6px; font-family:monospace; font-size:0.82rem; color:#dfe; }
+.result-title{font-weight:700;font-size:1.05rem;}
+.prediction{margin-top:10px;font-size:1.15rem;font-weight:800;}
+.confidence{margin-top:10px;}
+.meter{height:10px;background:rgba(255,255,255,0.04);border-radius:8px;overflow:hidden;}
+.meter-fill{height:100%;width:0%;transition:width 600ms;}
+.disclaimer{margin-top:12px;padding:10px;border-radius:8px;background:rgba(255,0,0,0.03);color:#ffdede;font-size:0.85rem;}
+.developer{font-size:0.85rem;color:var(--muted);margin-top:12px;display:flex;flex-direction:column;align-items:start;gap:8px;}
+.log{max-height:220px;overflow:auto;margin-top:8px;background:rgba(0,0,0,0.25);padding:8px;border-radius:6px;font-family:monospace;font-size:0.82rem;color:#dfe;}
+.channel-btn button{
+  padding:10px 20px;background-color:#25D366;color:white;border:none;
+  border-radius:5px;cursor:pointer;font-weight:600;
+}
+.channel-btn button:hover{opacity:0.85;}
 </style>
 </head>
 <body>
@@ -59,16 +71,14 @@ select {
   <!-- Header -->
   <header>
     <div class="brand">
-      <div>
-        <h1>OLD-STUDIO <span class="badge">3X STRATEGY</span></h1>
-        <div class="meta">Virtual Predictor — Sure wins & Trust us your gonna win</div>
-      </div>
+      <h1>OLD-STUDIO <span class="badge">3X STRATEGY</span></h1>
+      <div class="meta">Virtual Predictor — Sure wins & Trust us your gonna win</div>
     </div>
   </header>
 
   <!-- Controls -->
   <section class="controls">
-    <form id="prediction-form" style="display:flex; flex-wrap:wrap; gap:10px; align-items:center;">
+    <form id="prediction-form" style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;">
       <select id="result-1" required><option value="" disabled selected>PREVIOUS</option></select>
       <select id="result-2" required><option value="" disabled selected>SECOND</option></select>
       <select id="result-3" required><option value="" disabled selected>LATEST</option></select>
@@ -85,27 +95,37 @@ select {
     <div class="panel">
       <div class="result-title">Prediction Output</div>
       <div id="prediction-area" style="margin-top:8px">
-        <div id="status" class="meta">Model status: initializing (Sure win)...</div>
-        <div id="out" style="margin-top:12px"><div style="color:var(--muted)">Select last 3 results and press Predict.</div></div>
+        <div id="status" class="meta">Model status: initializing...</div>
+        <div id="out" style="margin-top:12px">
+          <div style="color:var(--muted)">Select last 3 results and press Predict.</div>
+        </div>
       </div>
+
       <div class="disclaimer">
-        <strong>Important:</strong> This is a simulated, Virtual sure win predictor using synthetic data & in-browser model.
+        <strong>Important:</strong> Educational predictor using synthetic data (in-browser model).
       </div>
+
+      <!-- Developer Credit -->
       <div class="developer">
-        <div>Developer: <strong>SJ Checkers</strong></div>
-        <div class="contact"><div style="color:var(--muted)">Contact: SJ Checkers — WhatsApp: https://wa.me256781143176</div></div>
+        <div><strong>Developer:</strong> SJ Checkers</div>
+        <div>WhatsApp: +256781143176</div>
+        <div class="channel-btn">
+          <a href="https://whatsapp.com/channel/0029VbApq2W47XeDhGHqYR18" target="_blank">
+            <button>Join Our WhatsApp Channel</button>
+          </a>
+        </div>
       </div>
     </div>
 
     <!-- Info Panel -->
-    <aside class="panel" style="min-width:240px">
-      <div style="display:flex; justify-content:space-between; align-items:center">
+    <aside class="panel">
+      <div style="display:flex;justify-content:space-between;align-items:center">
         <div style="font-weight:700">Model Info</div>
         <div id="model-ready" style="font-size:0.85rem;color:var(--muted)">—</div>
       </div>
       <div style="margin-top:8px">
         <div class="meta">Dataset: synthetic (internal)</div>
-        <div class="meta">Model: tiny dense network (in-browser)</div>
+        <div class="meta">Model: dense neural net (browser)</div>
       </div>
       <div style="margin-top:12px">
         <div class="meta">Prediction log</div>
@@ -118,136 +138,96 @@ select {
 
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.9.0/dist/tf.min.js"></script>
 <script>
-// ==== Constants ====
-const RESULTS = ["1.00X - 1.50X","1.51X - 2.00X","2.01X - 3.00X","3.01X - 4.00X","4.01X - 5.00X","5.01X - 6.00X","6.01X - 7.00X","7.01X - 8.00X","8.01X - 10.00X","10.01X - 15.00X","15.01X - 20.00X","20.01X+"];
-const sel1 = document.getElementById('result-1');
-const sel2 = document.getElementById('result-2');
-const sel3 = document.getElementById('result-3');
-const out = document.getElementById('out');
-const status = document.getElementById('status');
-const logEl = document.getElementById('log');
-const modelReadyLabel = document.getElementById('model-ready');
-const STORAGE_KEY = 'oldstudio_last3_v2';
-let MODEL = null, TRAINED=false;
+// ==== Setup ====
+const RESULTS=["1.00X - 1.50X","1.51X - 2.00X","2.01X - 3.00X","3.01X - 4.00X","4.01X - 5.00X","5.01X - 6.00X","6.01X - 7.00X","7.01X - 8.00X","8.01X - 10.00X","10.01X - 15.00X","15.01X - 20.00X","20.01X+"];
+const sel1=document.getElementById('result-1'),sel2=document.getElementById('result-2'),sel3=document.getElementById('result-3');
+const out=document.getElementById('out'),status=document.getElementById('status'),logEl=document.getElementById('log'),modelReadyLabel=document.getElementById('model-ready');
+let MODEL=null,TRAINED=false;
+const KEY='oldstudio_last3_v2';
 
-// ==== Populate Selectors ====
-function populateSelects(){
-  [sel1, sel2, sel3].forEach(s=>{
+// ==== Populate selectors ====
+function populate(){
+  [sel1,sel2,sel3].forEach(s=>{
     s.innerHTML='<option value="" disabled selected>SELECT</option>';
-    RESULTS.forEach((r,i)=>{ const o=document.createElement('option'); o.value=i; o.textContent=r; s.appendChild(o); });
+    RESULTS.forEach((r,i)=>{const o=document.createElement('option');o.value=i;o.textContent=r;s.appendChild(o);});
   });
 }
-populateSelects();
+populate();
 
 // ==== Local Storage ====
-function saveLast(a,b,c){ try{ localStorage.setItem(STORAGE_KEY, JSON.stringify([a,b,c])); }catch(e){} }
-function loadLast(){ try{ const v=JSON.parse(localStorage.getItem(STORAGE_KEY)||'null'); if(Array.isArray(v)&&v.length===3) return v; }catch(e){} return null; }
-(function restore(){ const v=loadLast(); if(v){ sel1.value=v[0]; sel2.value=v[1]; sel3.value=v[2]; }})();
+function saveLast(a,b,c){try{localStorage.setItem(KEY,JSON.stringify([a,b,c]));}catch(e){}}
+function loadLast(){try{const v=JSON.parse(localStorage.getItem(KEY)||'null');if(Array.isArray(v)&&v.length===3)return v;}catch(e){}return null;}
+(function restore(){const v=loadLast();if(v){sel1.value=v[0];sel2.value=v[1];sel3.value=v[2];}})();
 
-// ==== Model Helpers ====
-function idxToNum(i){ const mids=[1.25,1.75,2.5,3.5,4.5,5.5,6.5,7.5,9.0,12.5,17.5,22.0]; return mids[i]??(1+i); }
+// ==== Helpers ====
+function idxToNum(i){const mids=[1.25,1.75,2.5,3.5,4.5,5.5,6.5,7.5,9.0,12.5,17.5,22.0];return mids[i]??(1+i);}
 function genData(n=3000){
-  const X=[], Y=[];
+  const X=[],Y=[];
   for(let i=0;i<n;i++){
     const base=Math.floor(Math.random()*RESULTS.length);
-    const spike=Math.random()<0.06;
-    const trendUp=Math.random()<0.46;
-    const prev=Math.max(0,Math.min(RESULTS.length-1, base+(trendUp?-1:1)+Math.floor((Math.random()-0.5)*2)));
-    const second=Math.max(0,Math.min(RESULTS.length-1, prev+Math.floor((Math.random()-0.5)*3)));
-    const latest=Math.max(0,Math.min(RESULTS.length-1, second+(spike?3:(trendUp?1:-1))+Math.floor((Math.random()-0.5)*2)));
+    const spike=Math.random()<0.06,trendUp=Math.random()<0.46;
+    const prev=Math.max(0,Math.min(RESULTS.length-1,base+(trendUp?-1:1)+Math.floor((Math.random()-0.5)*2)));
+    const second=Math.max(0,Math.min(RESULTS.length-1,prev+Math.floor((Math.random()-0.5)*3)));
+    const latest=Math.max(0,Math.min(RESULTS.length-1,second+(spike?3:(trendUp?1:-1))+Math.floor((Math.random()-0.5)*2)));
     const noise=(Math.random()-0.5)*0.28;
-    X.push([idxToNum(prev), idxToNum(second), idxToNum(latest)]);
+    X.push([idxToNum(prev),idxToNum(second),idxToNum(latest)]);
     Y.push(idxToNum(latest)*(spike?(1+Math.random()*1.2):(1+noise)));
   }
-  return { X: tf.tensor2d(X), y: tf.tensor1d(Y) };
+  return{X:tf.tensor2d(X),y:tf.tensor1d(Y)};
 }
-function buildModel(){
+function build(){
   const m=tf.sequential();
-  m.add(tf.layers.dense({units:18, activation:'relu', inputShape:[3]}));
-  m.add(tf.layers.dense({units:12, activation:'relu'}));
+  m.add(tf.layers.dense({units:18,activation:'relu',inputShape:[3]}));
+  m.add(tf.layers.dense({units:12,activation:'relu'}));
   m.add(tf.layers.dense({units:1}));
-  m.compile({optimizer:tf.train.adam(0.008), loss:'meanSquaredError'});
+  m.compile({optimizer:tf.train.adam(0.008),loss:'meanSquaredError'});
   return m;
 }
-async function trainModel(verbose=false, epochs=25){
+async function trainModel(verbose=false,epochs=25){
   status.textContent='Preparing synthetic data...';
-  const data=genData(Math.max(1200, Math.min(4000, epochs*140)));
-  const m=buildModel();
+  const d=genData(epochs*140);
+  const m=build();
   status.textContent='Training model...';
-  await m.fit(data.X, data.y, {
-    epochs, batchSize:64, shuffle:true,
-    callbacks:{ onEpochEnd:(ep,logs)=>{ if(verbose) status.textContent=`Training: epoch ${ep+1} loss ${logs.loss.toFixed(4)}`; } }
-  });
-  data.X.dispose(); data.y.dispose();
-  if(MODEL){ try{ MODEL.dispose(); }catch(e){} }
-  MODEL=m; TRAINED=true;
-  modelReadyLabel.textContent='ready (sure)';
-  status.textContent='Model ready (Sure).';
+  await m.fit(d.X,d.y,{epochs,batchSize:64,shuffle:true,callbacks:{onEpochEnd:(ep,l)=>{if(verbose)status.textContent=`Epoch ${ep+1} loss ${l.loss.toFixed(4)}`;}}});
+  d.X.dispose();d.y.dispose();
+  if(MODEL)try{MODEL.dispose();}catch(e){}
+  MODEL=m;TRAINED=true;modelReadyLabel.textContent='ready';status.textContent='Model ready.';
 }
 function mapToRange(num){
-  let best=0, bd=Infinity;
-  for(let i=0;i<RESULTS.length;i++){
-    const d=Math.abs(num-idxToNum(i));
-    if(d<bd){ bd=d; best=i; }
-  }
-  const conf=Math.max(28,Math.min(94, Math.round(94-bd*8)));
-  return {label:RESULTS[best], conf, raw:num};
+  let best=0,bd=Infinity;
+  for(let i=0;i<RESULTS.length;i++){const d=Math.abs(num-idxToNum(i));if(d<bd){bd=d;best=i;}}
+  const conf=Math.max(28,Math.min(94,Math.round(94-bd*8)));
+  return{label:RESULTS[best],conf,raw:num};
 }
 async function predict(i1,i2,i3){
   saveLast(i1,i2,i3);
-  if(!TRAINED) await trainModel(false,22);
-  const inp=tf.tensor2d([[idxToNum(i1), idxToNum(i2), idxToNum(i3)]]);
+  if(!TRAINED)await trainModel(false,20);
+  const inp=tf.tensor2d([[idxToNum(i1),idxToNum(i2),idxToNum(i3)]]);
   const val=(await MODEL.predict(inp).data())[0];
   inp.dispose();
   return mapToRange(val);
 }
-
-// ==== UI Helpers ====
-function logMsg(msg){ const t=new Date().toLocaleTimeString(); logEl.insertAdjacentHTML('afterbegin',`<div>[${t}] ${msg}</div>`); }
+function log(msg){const t=new Date().toLocaleTimeString();logEl.insertAdjacentHTML('afterbegin',`<div>[${t}] ${msg}</div>`);}
 function showResult(mapped){
   out.innerHTML=`<div class="prediction">${mapped.label}</div>
-  <div class="meta">Predicted (Sure numeric): <strong>${Number(mapped.raw).toFixed(2)}x</strong></div>
-  <div class="confidence">
-    <div class="meter"><div class="meter-fill" style="width:${mapped.conf}%; background:linear-gradient(90deg,#00D4AA,#00FF9E)"></div></div>
-    <div class="meta">Confidence (demo): ${mapped.conf}% — educational only</div>
-  </div>`;
+  <div class="meta">Predicted: <strong>${mapped.raw.toFixed(2)}x</strong></div>
+  <div class="confidence"><div class="meter"><div class="meter-fill" style="width:${mapped.conf}%;background:linear-gradient(90deg,#00D4AA,#00FF9E)"></div></div>
+  <div class="meta">Confidence: ${mapped.conf}%</div></div>`;
 }
 
-// ==== Event Listeners ====
-document.getElementById('prediction-form').addEventListener('submit', async e=>{
+// ==== Events ====
+document.getElementById('prediction-form').addEventListener('submit',async e=>{
   e.preventDefault();
-  const a=parseInt(sel1.value), b=parseInt(sel2.value), c=parseInt(sel3.value);
-  if([a,b,c].some(v=>isNaN(v))){ out.innerHTML='<div class="meta" style="color:#ffb3b3">Please select all three ranges.</div>'; return; }
-  status.textContent='Running Sure prediction...';
-  out.innerHTML='<div class="meta">Analyzing (demo)...</div>';
-  try{
-    const mapped=await predict(a,b,c);
-    showResult(mapped);
-    logMsg(`Input [${RESULTS[a]} | ${RESULTS[b]} | ${RESULTS[c]}] → ${mapped.label} (conf ${mapped.conf}%)`);
-  }catch(err){
-    out.innerHTML='<div class="meta" style="color:#ffb3b3">Demo prediction failed.</div>';
-    console.error(err);
-  }
+  const a=parseInt(sel1.value),b=parseInt(sel2.value),c=parseInt(sel3.value);
+  if([a,b,c].some(v=>isNaN(v))){out.innerHTML='<div class="meta" style="color:#ffb3b3">Select all three ranges.</div>';return;}
+  status.textContent='Running prediction...';
+  try{const mapped=await predict(a,b,c);showResult(mapped);log(`Input [${RESULTS[a]}|${RESULTS[b]}|${RESULTS[c]}]→${mapped.label} (${mapped.conf}%)`);}
+  catch(err){out.innerHTML='<div class="meta" style="color:#ffb3b3">Prediction failed.</div>';console.error(err);}
 });
-document.getElementById('retrain').addEventListener('click', async ()=>{
-  status.textContent='Retraining demo model...';
-  try{ await trainModel(true,28); logMsg('Model retrained (demo)'); }catch(e){ status.textContent='Retrain failed (demo)'; console.error(e);}
-});
-document.getElementById('reset').addEventListener('click', ()=>{
-  try{ localStorage.removeItem(STORAGE_KEY); }catch(e){}
-  populateSelects(); out.innerHTML=''; status.textContent='Saved inputs cleared.';
-  logMsg('Saved inputs reset');
-});
-
-// ==== Background Training ====
-(async function(){ try{ await new Promise(r=>setTimeout(r,600)); if(!TRAINED) await trainModel(false,12); logMsg('Background model pre-trained'); }catch(e){ console.warn(e); status.textContent='Model not trained. Use Win Today or Predict.';} })();
-
-logMsg('Sure Win ready. Developer credit: SJ Checkers.');
-  <a href="https://whatsapp.com/channel/0029VbApq2W47XeDhGHqYR18" target="_blank">
-  <button style="padding:10px 20px; background-color:#25D366; color:white; border:none; border-radius:5px; cursor:pointer;">
-    Join Our WhatsApp Channel
-  </button>
-</a>
+document.getElementById('retrain').addEventListener('click',async()=>{status.textContent='Retraining...';await trainModel(true,28);log('Model retrained');});
+document.getElementById('reset').addEventListener('click',()=>{localStorage.removeItem(KEY);populate();out.innerHTML='';status.textContent='Cleared.';log('Reset saved');});
+(async function bg(){await new Promise(r=>setTimeout(r,600));if(!TRAINED)await trainModel(false,12);log('Model pretrained');})();
+log('Virtual Predictor ready. Developer: SJ Checkers.');
 </script>
 </body>
-          </html>
+  </html>
