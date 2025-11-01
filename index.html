@@ -3,37 +3,44 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>OLD-STUDIO — Aviator Predictor (SJ Checkers)</title>
+<title>OLD-STUDIO — Aviator Predictor</title>
+
+<!-- PWA Manifest -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#00E5FF">
+<link rel="apple-touch-icon" href="https://img.icons8.com/emoji/48/000000/airplane-emoji.png">
+
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.12.0/dist/tf.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
 <style>
 :root{
   --bg:#0F0F1A; --card:#171723; --accent1:#00E5FF; --accent2:#7B68EE;
-  --muted:#A0A0B0; --good:#00D4AA; --warning:#FFA500; --bad:#FF6B6B;
+  --muted:#A0A0B0; --good:#00D4AA; --warn:#FFA500; --bad:#FF6B6B;
 }
 *{box-sizing:border-box;margin:0;padding:0;}
 body{
   font-family:'Poppins',sans-serif;
   background:linear-gradient(180deg,#080810 0%,#0F0F1A 100%);
-  min-height:100vh; display:flex; justify-content:center; align-items:center; padding:12px; color:#EEE;
+  min-height:100vh; display:flex; justify-content:center; align-items:flex-start; padding:12px; color:#EEE;
 }
 .app{
   width:100%; max-width:480px; background:var(--card); border-radius:16px; padding:20px;
   border:1px solid rgba(255,255,255,0.05); box-shadow:0 15px 35px rgba(0,0,0,0.6); display:flex; flex-direction:column; gap:16px;
 }
 header{text-align:center;}
-header img.logo{width:64px;height:64px;margin-bottom:8px;}
 h1{font-size:1.4rem;}
 .badge{background:linear-gradient(90deg,var(--accent1),var(--accent2));color:#071018;padding:6px 12px;border-radius:999px;font-weight:700;font-size:0.8rem;}
 .controls{display:flex;flex-direction:column;gap:10px;}
 select{padding:12px;border-radius:12px;border:1px solid rgba(255,255,255,0.05);background:#0d0d15;color:#EEE;font-size:0.9rem;}
+input[type=number]{padding:6px;border-radius:8px;border:1px solid #555;background:#0d0d15;color:#EEE;width:80px;}
 .btn{padding:12px;border-radius:12px;border:none;font-weight:700;cursor:pointer;background:linear-gradient(135deg,var(--accent1),var(--accent2));color:#071218;font-size:1rem;transition:transform 0.2s;}
 .btn:hover{transform:scale(1.05);}
 .result-container{margin-top:12px;background:rgba(30,30,46,0.85);padding:16px;border-radius:12px;border-left:5px solid var(--accent1);display:flex;flex-direction:column;gap:12px;}
 .prediction{font-weight:700;font-size:1.2rem;color:var(--good);}
 .confidence-bar{height:16px;background:rgba(255,255,255,0.1);border-radius:12px;overflow:hidden;}
-.confidence-fill{height:100%;width:0%;border-radius:12px;background:linear-gradient(90deg,var(--good),#00FF9E);transition:width 0.6s;}
+.conf-fill{height:100%;width:0%;border-radius:12px;background:linear-gradient(90deg,var(--good),#00FF9E);transition:width 0.6s;}
 .footer{margin-top:auto;display:flex;flex-direction:column;gap:12px;align-items:center;text-align:center;}
 .footer a button{padding:10px 20px;background-color:#25D366;color:white;border:none;border-radius:6px;font-weight:600;cursor:pointer;}
 .footer .contact a{color:#00E5FF;text-decoration:none;font-weight:500;}
@@ -46,8 +53,7 @@ canvas{width:100%;height:100%;}
 <body>
 <main class="app">
 <header>
-<img class="logo" src="https://img.icons8.com/emoji/64/000000/airplane-emoji.png" alt="Logo">
-<h1>OLD-STUDIO <span class="badge">3X STRATEGY</span></h1>
+<h1><img src="https://img.icons8.com/emoji/48/000000/airplane-emoji.png" style="width:32px;vertical-align:middle;"> OLD-STUDIO <span class="badge">3X STRATEGY</span></h1>
 <div class="meta">Sure Win Aviator Predictor</div>
 </header>
 
@@ -57,18 +63,33 @@ canvas{width:100%;height:100%;}
 </div>
 
 <div class="controls">
-<select id="result-1"><option value="" disabled selected>PREVIOUS</option></select>
-<select id="result-2"><option value="" disabled selected>SECOND</option></select>
-<select id="result-3"><option value="" disabled selected>LATEST</option></select>
-<button class="btn" id="predict-btn"><i class="fas fa-plane"></i> PREDICT</button>
+<form id="prediction-form">
+<select id="result-1"></select>
+<select id="result-2"></select>
+<select id="result-3"></select>
+<button type="submit" class="btn"><i class="fas fa-plane"></i> PREDICT</button>
+</form>
 </div>
 
-<div class="result-container" id="prediction-area">
-<div class="prediction">Select 3 results and click Predict</div>
+<div class="result-container">
+<div id="out" class="prediction">Select 3 results and click Predict</div>
 <div class="confidence-bar">
-<div class="confidence-fill" id="confidence-fill"></div>
+<div class="conf-fill" id="conf-fill"></div>
 </div>
-<div class="confidence-text" id="confidence-text"></div>
+<div id="prediction-details" class="muted"></div>
+</div>
+
+<div class="controls" style="gap:6px;">
+Stake: <input id="stake-amount" type="number">
+<button class="btn" id="stake-sim">Simulate Stake</button>
+<button class="btn" id="retrain">Retrain Model</button>
+<button class="btn" id="reset">Reset</button>
+<button class="btn" id="export-log">Export Log CSV</button>
+<div>Points: <span id="points">0</span></div>
+</div>
+
+<div style="margin-top:12px;">
+<canvas id="loss-chart" style="height:120px;width:100%;"></canvas>
 </div>
 
 <div class="footer">
@@ -82,102 +103,50 @@ Developer: SJ Checkers — Contact: <a href="https://wa.me/256781143176" target=
 </main>
 
 <script>
-// --- RESULTS ---
-const RESULTS = ["1.00X - 1.50X","1.51X - 2.00X","2.01X - 3.00X","3.01X - 4.00X","4.01X - 5.00X",
-"5.01X - 6.00","6.01X - 7.00","7.01X - 8.00","8.01X - 10.00","10.01X - 15.00","15.01X - 20.00","20.01X+"];
-
-const sel1 = document.getElementById('result-1');
-const sel2 = document.getElementById('result-2');
-const sel3 = document.getElementById('result-3');
-const predArea = document.getElementById('prediction-area');
-const confFill = document.getElementById('confidence-fill');
-const confText = document.getElementById('confidence-text');
-const canvas = document.getElementById('aviator-graph');
-const plane = document.getElementById('plane');
-const ctx = canvas.getContext('2d');
-
-canvas.width = canvas.offsetWidth;
-canvas.height = canvas.offsetHeight;
-
-function populateDropdowns(){
-  [sel1,sel2,sel3].forEach(sel=>{
-    RESULTS.forEach((r,i)=>{
-      const o=document.createElement('option'); o.value=i; o.textContent=r; sel.appendChild(o);
-    });
-  });
-}
-populateDropdowns();
-
-function idxToNum(i){
-  const mids=[1.25,1.75,2.5,3.5,4.5,5.5,6.5,7.5,9.0,12.5,17.5,22.0];
-  return mids[i] ?? (1+i);
+// ===== Service Worker Registration for PWA =====
+if('serviceWorker' in navigator){
+  window.addEventListener('load',()=>{ navigator.serviceWorker.register('sw.js').then(()=>console.log('SW registered')).catch(console.error); });
 }
 
-function generatePrediction(i1,i2,i3){
-  const vals=[idxToNum(i1),idxToNum(i2),idxToNum(i3)];
-  const avg=(vals[0]+vals[1]+vals[2])/3;
-  const trend=vals[2]-vals[0];
-  const volatility=Math.abs(vals[0]-vals[1])+Math.abs(vals[1]-vals[2]);
-  let prediction='', confidence=0;
-  if(avg>=2 && avg<=5 && volatility<3){
-    prediction='NEXT AVIATOR CRASH: 2.5X - 4X';
-    confidence=78+Math.floor(Math.random()*10);
-  } else if(avg>5 && trend>1){
-    prediction='HIGHER POTENTIAL: 5X - 8X';
-    confidence=65+Math.floor(Math.random()*12);
-  } else if(volatility>4 || avg<2){
-    prediction='CAUTIOUS: 1.5X - 2.5X';
-    confidence=70+Math.floor(Math.random()*8);
-  } else{
-    prediction='NEXT AVIATOR CRASH: 2X - 4X';
-    confidence=74+Math.floor(Math.random()*8);
-  }
-  return {prediction, confidence, nextVal:avg + Math.random()*2};
-}
+// ===== Prediction Logic =====
+(() => {
+const RESULTS=["1.00X - 1.50X","1.51X - 2.00X","2.01X - 3.00X","3.01X - 4.00X","4.01X - 5.00X","5.01X - 6.00","6.01X - 7.00","7.01X - 8.00","8.01X - 10.00","10.01X - 15.00","15.01X - 20.00","20.01X+"];
+const sel1=document.getElementById('result-1'), sel2=document.getElementById('result-2'), sel3=document.getElementById('result-3');
+const out=document.getElementById('out'), status=document.getElementById('prediction-details'), confFill=document.getElementById('conf-fill');
+const plane=document.getElementById('plane'), canvas=document.getElementById('aviator-graph'), ctx=canvas.getContext('2d');
+const pointsEl=document.getElementById('points');
+canvas.width=canvas.offsetWidth; canvas.height=canvas.offsetHeight;
 
-document.getElementById('predict-btn').addEventListener('click', ()=>{
-  const i1=parseInt(sel1.value), i2=parseInt(sel2.value), i3=parseInt(sel3.value);
-  if(isNaN(i1)||isNaN(i2)||isNaN(i3)){
-    predArea.querySelector('.prediction').textContent='Please select all 3 results';
-    confFill.style.width='0%';
-    confText.textContent='';
-    return;
-  }
-  const {prediction, confidence, nextVal} = generatePrediction(i1,i2,i3);
-  predArea.querySelector('.prediction').textContent=prediction;
-  confFill.style.width=confidence+'%';
-  confText.textContent=`Confidence: ${confidence}% — Sure Win`;
-  drawGraph(nextVal,true);
-});
+let MODEL=null, TRAINED=false, points=Number(localStorage.getItem('oldstudio_points')||1000); pointsEl.innerText=points;
 
-function drawGraph(target,animatePlane=false){
-  const w = canvas.width;
-  const h = canvas.height;
-  ctx.clearRect(0,0,w,h);
-  ctx.strokeStyle='#00E5FF';
-  ctx.lineWidth=2;
-  ctx.beginPath();
-  const points = [];
-  for(let i=0;i<=w;i+=4){
-    const val = Math.min(h-20, Math.random()*h*0.3 + (i/w)*target*6);
-    points.push(val);
-  }
-  ctx.moveTo(0,h-points[0]);
-  for(let i=1;i<points.length;i++){
-    ctx.lineTo(i,h-points[i]);
-  }
-  ctx.stroke();
+function populateSelects(){ [sel1,sel2,sel3].forEach(s=>{ s.innerHTML='<option value="" disabled selected>SELECT</option>'; RESULTS.forEach((r,i)=>{ const o=document.createElement('option'); o.value=i; o.textContent=r; s.appendChild(o); }); }); }
+populateSelects();
 
-  if(animatePlane){
-    let idx=0;
-    const interval = setInterval(()=>{
-      if(idx>=points.length){ clearInterval(interval); return;}
-      plane.style.left = idx + 'px';
-      plane.style.top = (h - points[idx]) + 'px';
-      idx++;
-    },16);
-  }
-}
+function idxToNum(i){ const mids=[1.25,1.75,2.5,3.5,4.5,5.5,6.5,7.5,9.0,12.5,17.5,22.0]; return mids[i]??(1+i); }
+function saveInputs(a,b,c){ localStorage.setItem('inputs',JSON.stringify([a,b,c])); }
+function loadInputs(){ try{ const v=JSON.parse(localStorage.getItem('inputs')||'null'); if(Array.isArray(v)&&v.length===3) return v;}catch(e){} return null; }
+(function(){ const v=loadInputs(); if(v){ sel1.value=v[0]; sel2.value=v[1]; sel3.value=v[2]; } })();
+
+function generateSynthetic(n=1800){ const X=[],y=[]; for(let k=0;k<n;k++){ const base=Math.floor(Math.random()*RESULTS.length); const spike=Math.random()<0.06; const trendUp=Math.random()<0.46; const prev=Math.max(0,Math.min(RESULTS.length-1,base+(trendUp?-1:1)+Math.floor((Math.random()-0.5)*2))); const second=Math.max(0,Math.min(RESULTS.length-1,prev+Math.floor((Math.random()-0.5)*3))); const latest=Math.max(0,Math.min(RESULTS.length-1,second+(spike?3:(trendUp?1:-1))+Math.floor((Math.random()-0.5)*2))); const noise=(Math.random()-0.5)*0.28; X.push([idxToNum(prev),idxToNum(second),idxToNum(latest)]); y.push(idxToNum(latest)*(spike?(1+Math.random()*1.2):(1+noise))); } return {X:tf.tensor2d(X),y:tf.tensor1d(y)}; }
+
+function buildModel(){ const m=tf.sequential(); m.add(tf.layers.dense({units:20,activation:'relu',inputShape:[3]})); m.add(tf.layers.dense({units:14,activation:'relu'})); m.add(tf.layers.dense({units:1})); m.compile({optimizer:tf.train.adam(0.008),loss:'meanSquaredError'}); return m; }
+
+async function trainModel(epochs=18){ status.innerText='Training model...'; const data=generateSynthetic(Math.max(1200,epochs*90)); const model=buildModel(); await model.fit(data.X,data.y,{epochs,batchSize:64,shuffle:true}); data.X.dispose(); data.y.dispose(); if(MODEL)MODEL.dispose(); MODEL=model; TRAINED=true; status.innerText='Model trained (prototype)'; }
+
+function numericToRange(val){ let best=0,bd=Infinity; for(let i=0;i<RESULTS.length;i++){ const d=Math.abs(val-idxToNum(i)); if(d<bd){ bd=d; best=i; } } const conf=Math.max(30,Math.min(95,Math.round(95-bd*8+(Math.random()*6-3)))); return {label:RESULTS[best],idx:best,conf,raw:Number(val.toFixed(2))}; }
+
+async function runPrediction(i1,i2,i3){ saveInputs(i1,i2,i3); if(!TRAINED) await trainModel(12); const input=tf.tensor2d([[idxToNum(i1),idxToNum(i2),idxToNum(i3)]]); const output=MODEL.predict(input); const val=(await output.data())[0]; input.dispose(); output.dispose(); return numericToRange(val); }
+
+function showResult(mapped){ out.innerHTML=`<div style="text-align:center"><div class="title">${mapped.label}</div><div class="muted" style="margin-top:6px">Predicted numeric: <strong>${mapped.raw}x</strong></div></div>`; confFill.style.width=mapped.conf+'%'; confFill.className='conf-fill '+(mapped.conf>72?'good':(mapped.conf>50?'warn':'bad')); status.innerText=`Confidence: ${mapped.conf}% — research prototype.`; }
+
+function drawGraph(target){ const w=canvas.width,h=canvas.height; ctx.clearRect(0,0,w,h); ctx.strokeStyle='#00E5FF'; ctx.lineWidth=2; ctx.beginPath(); const points=[]; for(let i=0;i<=w;i+=4){ points.push(Math.min(h-20,Math.random()*h*0.3+(i/w)*target*6)); } ctx.moveTo(0,h-points[0]); for(let i=1;i<points.length;i++){ ctx.lineTo(i,h-points[i]); } ctx.stroke(); let idx=0; const interval=setInterval(()=>{ if(idx>=points.length){ clearInterval(interval); return;} plane.style.left=idx+'px'; plane.style.top=(h-points[idx])+'px'; idx++; },16); }
+
+document.getElementById('prediction-form').addEventListener('submit',async e=>{ e.preventDefault(); const a=parseInt(sel1.value),b=parseInt(sel2.value),c=parseInt(sel3.value); if([a,b,c].some(v=>Number.isNaN(v))){ out.innerHTML='<div style="color:#ffb3b3;text-align:center">Select all three ranges</div>'; return; } out.innerHTML='<div class="muted" style="text-align:center">Analyzing...</div>'; const mapped=await runPrediction(a,b,c); showResult(mapped); drawGraph(mapped.idx+1); });
+
+document.getElementById('stake-sim').addEventListener('click',async ()=>{ const stake=Math.max(1,Math.floor(Number(document.getElementById('stake-amount').value)||0)); if(stake<=0){ alert('Enter stake >=1'); return;} const a=parseInt(sel1.value),b=parseInt(sel2.value),c=parseInt(sel3.value); if([a,b,c].some(v=>Number.isNaN(v))){ alert('Select all three last results'); return;} const pred=await runPrediction(a,b,c); const win=Math.random()<Math.min(0.95,Math.max(0.05,pred.conf/110)); const payout=Math.max(1.2,pred.raw/2.5); let change=win?Math.round(stake*payout):-stake; points+=change; pointsEl.innerText=points; localStorage.setItem('oldstudio_points',points); });
+
+document.getElementById('reset').addEventListener('click',()=>{ localStorage.clear(); populateSelects(); out.innerHTML='<div class="muted" style="text-align:center">Reset complete.</div>'; points=1000; pointsEl.innerText=points; });
+})();
 </script>
 </body>
   </html>
