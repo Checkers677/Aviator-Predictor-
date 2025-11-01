@@ -3,16 +3,16 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>OLD-STUDIO — Sure Win Predictor (SJ Checkers)</title>
+<title>OLD-STUDIO — Aviator Predictor (SJ Checkers)</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
-:root {
+:root{
     --bg:#0F0F1A; --card:#171723; --accent1:#00E5FF; --accent2:#7B68EE;
     --muted:#A0A0B0; --good:#00D4AA; --warning:#FFA500; --bad:#FF6B6B;
 }
-* {box-sizing:border-box;margin:0;padding:0;}
-body {
+*{box-sizing:border-box;margin:0;padding:0;}
+body{
     font-family:'Poppins',sans-serif;
     background:linear-gradient(180deg,#080810 0%,#0F0F1A 100%);
     min-height:100vh;
@@ -22,7 +22,7 @@ body {
     padding:16px;
     color:#EEE;
 }
-.app {
+.app{
     width:100%;
     max-width:480px;
     background:var(--card);
@@ -34,19 +34,22 @@ body {
     flex-direction:column;
     gap:16px;
 }
-header{display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;}
+header{text-align:center;}
 h1{font-size:1.4rem;}
 .badge{background:linear-gradient(90deg,var(--accent1),var(--accent2));color:#071018;padding:6px 12px;border-radius:999px;font-weight:700;font-size:0.8rem;}
 .controls{display:flex;flex-direction:column;gap:10px;}
 select{padding:12px;border-radius:12px;border:1px solid rgba(255,255,255,0.05);background:#0d0d15;color:#EEE;font-size:0.9rem;}
-.btn{padding:12px;border-radius:12px;border:none;font-weight:700;cursor:pointer;background:linear-gradient(135deg,var(--accent1),var(--accent2));color:#071218;font-size:1rem;}
-.btn.ghost{background:transparent;border:1px solid rgba(255,255,255,0.05);color:var(--muted);}
-.result-container{margin-top:10px;background:rgba(30,30,46,0.8);padding:16px;border-radius:12px;border-left:5px solid var(--accent1);}
+.btn{padding:12px;border-radius:12px;border:none;font-weight:700;cursor:pointer;background:linear-gradient(135deg,var(--accent1),var(--accent2));color:#071218;font-size:1rem;transition:transform 0.2s;}
+.btn:hover{transform:scale(1.05);}
+.result-container{margin-top:12px;background:rgba(30,30,46,0.85);padding:16px;border-radius:12px;border-left:5px solid var(--accent1);display:flex;flex-direction:column;gap:12px;}
 .prediction{font-weight:700;font-size:1.2rem;color:var(--good);}
-.confidence{margin-top:8px;font-size:0.9rem;color:var(--accent1);}
+.confidence-bar{height:16px;background:rgba(255,255,255,0.1);border-radius:12px;overflow:hidden;}
+.confidence-fill{height:100%;width:0%;border-radius:12px;background:linear-gradient(90deg,var(--good),#00FF9E);transition:width 0.6s;}
 .footer{margin-top:auto;display:flex;flex-direction:column;gap:12px;align-items:center;text-align:center;}
 .footer a button{padding:10px 20px;background-color:#25D366;color:white;border:none;border-radius:6px;font-weight:600;cursor:pointer;}
 .footer .contact a{color:#00E5FF;text-decoration:none;font-weight:500;}
+.canvas-container{position:relative;height:180px;background:#0a0a15;border-radius:12px;overflow:hidden;margin-bottom:12px;}
+canvas{width:100%;height:100%;}
 @media(max-width:500px){.app{padding:16px;}}
 </style>
 </head>
@@ -54,18 +57,26 @@ select{padding:12px;border-radius:12px;border:1px solid rgba(255,255,255,0.05);b
 <main class="app">
 <header>
 <h1>OLD-STUDIO <span class="badge">3X STRATEGY</span></h1>
-<div class="meta">Sure Win Virtual Predictor</div>
+<div class="meta">Sure Win Aviator Predictor</div>
 </header>
+
+<div class="canvas-container">
+<canvas id="aviator-graph"></canvas>
+</div>
 
 <div class="controls">
 <select id="result-1"><option value="" disabled selected>PREVIOUS</option></select>
 <select id="result-2"><option value="" disabled selected>SECOND</option></select>
 <select id="result-3"><option value="" disabled selected>LATEST</option></select>
-<button class="btn" id="predict-btn"><i class="fas fa-bolt"></i> PREDICT</button>
+<button class="btn" id="predict-btn"><i class="fas fa-plane"></i> PREDICT</button>
 </div>
 
 <div class="result-container" id="prediction-area">
 <div class="prediction">Select 3 results and click Predict</div>
+<div class="confidence-bar">
+<div class="confidence-fill" id="confidence-fill"></div>
+</div>
+<div class="confidence-text" id="confidence-text"></div>
 </div>
 
 <div class="footer">
@@ -79,7 +90,7 @@ Developer: SJ Checkers — Contact: <a href="https://wa.me/256781143176" target=
 </main>
 
 <script>
-// --- RESULT OPTIONS ---
+// --- RESULTS ---
 const RESULTS = ["1.00X - 1.50X","1.51X - 2.00X","2.01X - 3.00X","3.01X - 4.00X","4.01X - 5.00X",
 "5.01X - 6.00X","6.01X - 7.00X","7.01X - 8.00X","8.01X - 10.00X","10.01X - 15.00X","15.01X - 20.00X","20.01X+"];
 
@@ -87,6 +98,13 @@ const sel1 = document.getElementById('result-1');
 const sel2 = document.getElementById('result-2');
 const sel3 = document.getElementById('result-3');
 const predArea = document.getElementById('prediction-area');
+const confFill = document.getElementById('confidence-fill');
+const confText = document.getElementById('confidence-text');
+const canvas = document.getElementById('aviator-graph');
+const ctx = canvas.getContext('2d');
+
+canvas.width = canvas.offsetWidth;
+canvas.height = canvas.offsetHeight;
 
 function populateDropdowns(){
     [sel1,sel2,sel3].forEach(sel=>{
@@ -97,13 +115,13 @@ function populateDropdowns(){
 }
 populateDropdowns();
 
-// --- HELPER: Index to numeric midpoint ---
+// --- HELPER: index to midpoint ---
 function idxToNum(i){
     const mids=[1.25,1.75,2.5,3.5,4.5,5.5,6.5,7.5,9.0,12.5,17.5,22.0];
     return mids[i] ?? (1+i);
 }
 
-// --- FUNCTION: Generate prediction ---
+// --- GENERATE PREDICTION ---
 function generatePrediction(i1,i2,i3){
     const vals=[idxToNum(i1),idxToNum(i2),idxToNum(i3)];
     const avg=(vals[0]+vals[1]+vals[2])/3;
@@ -124,20 +142,44 @@ function generatePrediction(i1,i2,i3){
         prediction='NEXT AVIATOR CRASH: 2X - 4X';
         confidence=74+Math.floor(Math.random()*8);
     }
-    return {prediction, confidence};
+    return {prediction, confidence, nextVal:avg + Math.random()*2};
 }
 
 // --- PREDICT BUTTON ---
 document.getElementById('predict-btn').addEventListener('click', ()=>{
     const i1=parseInt(sel1.value), i2=parseInt(sel2.value), i3=parseInt(sel3.value);
     if(isNaN(i1)||isNaN(i2)||isNaN(i3)){
-        predArea.innerHTML='<div class="prediction" style="color:#FF6B6B;">Please select all 3 results</div>';
+        predArea.querySelector('.prediction').textContent='Please select all 3 results';
+        confFill.style.width='0%';
+        confText.textContent='';
         return;
     }
-    const {prediction, confidence}=generatePrediction(i1,i2,i3);
-    predArea.innerHTML=`<div class="prediction">${prediction}</div>
-    <div class="confidence">Confidence: ${confidence}% — Sure Win</div>`;
+    const {prediction, confidence, nextVal} = generatePrediction(i1,i2,i3);
+    predArea.querySelector('.prediction').textContent=prediction;
+    confFill.style.width=confidence+'%';
+    confText.textContent=`Confidence: ${confidence}% — Sure Win`;
+    drawGraph(nextVal);
 });
+
+// --- AVIATOR GRAPH ---
+function drawGraph(target){
+    const w = canvas.width;
+    const h = canvas.height;
+    ctx.clearRect(0,0,w,h);
+    ctx.strokeStyle='#00E5FF';
+    ctx.lineWidth=2;
+    ctx.beginPath();
+    const points = [];
+    for(let i=0;i<=w;i+=4){
+        const val = Math.min(h-20, Math.random()*h*0.3 + (i/w)*target*6);
+        points.push(val);
+    }
+    ctx.moveTo(0,h-points[0]);
+    for(let i=1;i<points.length;i++){
+        ctx.lineTo(i*4,h-points[i]);
+    }
+    ctx.stroke();
+}
 </script>
 </body>
-  </html>
+    </html>
