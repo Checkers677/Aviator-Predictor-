@@ -1,6 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- PWA Manifest & Theme -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#00E5FF">
+<link rel="apple-touch-icon" href="https://img.icons8.com/emoji/48/000000/airplane-emoji.png">
+
+<!-- Register Service Worker -->
+<script>
+  if('serviceWorker' in navigator){
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./sw.js')
+      .then(() => console.log('Service Worker Registered'))
+      .catch(e => console.log('SW registration failed', e));
+    });
+  }
+</script>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>OLD-STUDIO — Aviator Predictor (SJ Checkers)</title>
