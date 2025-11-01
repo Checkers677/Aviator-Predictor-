@@ -8,31 +8,18 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
 :root{
-    --bg:#0F0F1A; --card:#171723; --accent1:#00E5FF; --accent2:#7B68EE;
-    --muted:#A0A0B0; --good:#00D4AA; --warning:#FFA500; --bad:#FF6B6B;
+  --bg:#0F0F1A; --card:#171723; --accent1:#00E5FF; --accent2:#7B68EE;
+  --muted:#A0A0B0; --good:#00D4AA; --warning:#FFA500; --bad:#FF6B6B;
 }
 *{box-sizing:border-box;margin:0;padding:0;}
 body{
-    font-family:'Poppins',sans-serif;
-    background:linear-gradient(180deg,#080810 0%,#0F0F1A 100%);
-    min-height:100vh;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    padding:16px;
-    color:#EEE;
+  font-family:'Poppins',sans-serif;
+  background:linear-gradient(180deg,#080810 0%,#0F0F1A 100%);
+  min-height:100vh; display:flex; justify-content:center; align-items:center; padding:12px; color:#EEE;
 }
 .app{
-    width:100%;
-    max-width:480px;
-    background:var(--card);
-    border-radius:16px;
-    padding:20px;
-    border:1px solid rgba(255,255,255,0.05);
-    box-shadow:0 15px 35px rgba(0,0,0,0.6);
-    display:flex;
-    flex-direction:column;
-    gap:16px;
+  width:100%; max-width:480px; background:var(--card); border-radius:16px; padding:20px;
+  border:1px solid rgba(255,255,255,0.05); box-shadow:0 15px 35px rgba(0,0,0,0.6); display:flex; flex-direction:column; gap:16px;
 }
 header{text-align:center;}
 h1{font-size:1.4rem;}
@@ -48,9 +35,10 @@ select{padding:12px;border-radius:12px;border:1px solid rgba(255,255,255,0.05);b
 .footer{margin-top:auto;display:flex;flex-direction:column;gap:12px;align-items:center;text-align:center;}
 .footer a button{padding:10px 20px;background-color:#25D366;color:white;border:none;border-radius:6px;font-weight:600;cursor:pointer;}
 .footer .contact a{color:#00E5FF;text-decoration:none;font-weight:500;}
-.canvas-container{position:relative;height:180px;background:#0a0a15;border-radius:12px;overflow:hidden;margin-bottom:12px;}
+.canvas-container{position:relative;height:200px;background:#0a0a15;border-radius:12px;overflow:hidden;margin-bottom:12px;}
 canvas{width:100%;height:100%;}
-@media(max-width:500px){.app{padding:16px;}}
+.plane{position:absolute;width:32px;height:32px;transform:translate(-16px,-16px);transition:left 0.1s,top 0.1s;}
+@media(max-width:500px){.app{padding:12px;}}
 </style>
 </head>
 <body>
@@ -62,6 +50,7 @@ canvas{width:100%;height:100%;}
 
 <div class="canvas-container">
 <canvas id="aviator-graph"></canvas>
+<img src="https://img.icons8.com/emoji/48/000000/airplane-emoji.png" class="plane" id="plane">
 </div>
 
 <div class="controls">
@@ -92,7 +81,7 @@ Developer: SJ Checkers — Contact: <a href="https://wa.me/256781143176" target=
 <script>
 // --- RESULTS ---
 const RESULTS = ["1.00X - 1.50X","1.51X - 2.00X","2.01X - 3.00X","3.01X - 4.00X","4.01X - 5.00X",
-"5.01X - 6.00X","6.01X - 7.00X","7.01X - 8.00X","8.01X - 10.00X","10.01X - 15.00X","15.01X - 20.00X","20.01X+"];
+"5.01X - 6.00","6.01X - 7.00","7.01X - 8.00","8.01X - 10.00","10.01X - 15.00","15.01X - 20.00","20.01X+"];
 
 const sel1 = document.getElementById('result-1');
 const sel2 = document.getElementById('result-2');
@@ -101,84 +90,90 @@ const predArea = document.getElementById('prediction-area');
 const confFill = document.getElementById('confidence-fill');
 const confText = document.getElementById('confidence-text');
 const canvas = document.getElementById('aviator-graph');
+const plane = document.getElementById('plane');
 const ctx = canvas.getContext('2d');
 
 canvas.width = canvas.offsetWidth;
 canvas.height = canvas.offsetHeight;
 
 function populateDropdowns(){
-    [sel1,sel2,sel3].forEach(sel=>{
-        RESULTS.forEach((r,i)=>{
-            const o=document.createElement('option'); o.value=i; o.textContent=r; sel.appendChild(o);
-        });
+  [sel1,sel2,sel3].forEach(sel=>{
+    RESULTS.forEach((r,i)=>{
+      const o=document.createElement('option'); o.value=i; o.textContent=r; sel.appendChild(o);
     });
+  });
 }
 populateDropdowns();
 
-// --- HELPER: index to midpoint ---
 function idxToNum(i){
-    const mids=[1.25,1.75,2.5,3.5,4.5,5.5,6.5,7.5,9.0,12.5,17.5,22.0];
-    return mids[i] ?? (1+i);
+  const mids=[1.25,1.75,2.5,3.5,4.5,5.5,6.5,7.5,9.0,12.5,17.5,22.0];
+  return mids[i] ?? (1+i);
 }
 
-// --- GENERATE PREDICTION ---
 function generatePrediction(i1,i2,i3){
-    const vals=[idxToNum(i1),idxToNum(i2),idxToNum(i3)];
-    const avg=(vals[0]+vals[1]+vals[2])/3;
-    const trend=vals[2]-vals[0];
-    const volatility=Math.abs(vals[0]-vals[1])+Math.abs(vals[1]-vals[2]);
-    let prediction='', confidence=0;
-
-    if(avg>=2 && avg<=5 && volatility<3){
-        prediction='NEXT AVIATOR CRASH: 2.5X - 4X';
-        confidence=78+Math.floor(Math.random()*10);
-    } else if(avg>5 && trend>1){
-        prediction='HIGHER POTENTIAL: 5X - 8X';
-        confidence=65+Math.floor(Math.random()*12);
-    } else if(volatility>4 || avg<2){
-        prediction='CAUTIOUS: 1.5X - 2.5X';
-        confidence=70+Math.floor(Math.random()*8);
-    } else{
-        prediction='NEXT AVIATOR CRASH: 2X - 4X';
-        confidence=74+Math.floor(Math.random()*8);
-    }
-    return {prediction, confidence, nextVal:avg + Math.random()*2};
+  const vals=[idxToNum(i1),idxToNum(i2),idxToNum(i3)];
+  const avg=(vals[0]+vals[1]+vals[2])/3;
+  const trend=vals[2]-vals[0];
+  const volatility=Math.abs(vals[0]-vals[1])+Math.abs(vals[1]-vals[2]);
+  let prediction='', confidence=0;
+  if(avg>=2 && avg<=5 && volatility<3){
+    prediction='NEXT AVIATOR CRASH: 2.5X - 4X';
+    confidence=78+Math.floor(Math.random()*10);
+  } else if(avg>5 && trend>1){
+    prediction='HIGHER POTENTIAL: 5X - 8X';
+    confidence=65+Math.floor(Math.random()*12);
+  } else if(volatility>4 || avg<2){
+    prediction='CAUTIOUS: 1.5X - 2.5X';
+    confidence=70+Math.floor(Math.random()*8);
+  } else{
+    prediction='NEXT AVIATOR CRASH: 2X - 4X';
+    confidence=74+Math.floor(Math.random()*8);
+  }
+  return {prediction, confidence, nextVal:avg + Math.random()*2};
 }
 
-// --- PREDICT BUTTON ---
 document.getElementById('predict-btn').addEventListener('click', ()=>{
-    const i1=parseInt(sel1.value), i2=parseInt(sel2.value), i3=parseInt(sel3.value);
-    if(isNaN(i1)||isNaN(i2)||isNaN(i3)){
-        predArea.querySelector('.prediction').textContent='Please select all 3 results';
-        confFill.style.width='0%';
-        confText.textContent='';
-        return;
-    }
-    const {prediction, confidence, nextVal} = generatePrediction(i1,i2,i3);
-    predArea.querySelector('.prediction').textContent=prediction;
-    confFill.style.width=confidence+'%';
-    confText.textContent=`Confidence: ${confidence}% — Sure Win`;
-    drawGraph(nextVal);
+  const i1=parseInt(sel1.value), i2=parseInt(sel2.value), i3=parseInt(sel3.value);
+  if(isNaN(i1)||isNaN(i2)||isNaN(i3)){
+    predArea.querySelector('.prediction').textContent='Please select all 3 results';
+    confFill.style.width='0%';
+    confText.textContent='';
+    return;
+  }
+  const {prediction, confidence, nextVal} = generatePrediction(i1,i2,i3);
+  predArea.querySelector('.prediction').textContent=prediction;
+  confFill.style.width=confidence+'%';
+  confText.textContent=`Confidence: ${confidence}% — Sure Win`;
+  drawGraph(nextVal,true);
 });
 
-// --- AVIATOR GRAPH ---
-function drawGraph(target){
-    const w = canvas.width;
-    const h = canvas.height;
-    ctx.clearRect(0,0,w,h);
-    ctx.strokeStyle='#00E5FF';
-    ctx.lineWidth=2;
-    ctx.beginPath();
-    const points = [];
-    for(let i=0;i<=w;i+=4){
-        const val = Math.min(h-20, Math.random()*h*0.3 + (i/w)*target*6);
-        points.push(val);
-    }
-    ctx.moveTo(0,h-points[0]);
-    for(let i=1;i<points.length;i++){
-        ctx.lineTo(i*4,h-points[i]);
-    }
-    ctx.stroke();
+function drawGraph(target,animatePlane=false){
+  const w = canvas.width;
+  const h = canvas.height;
+  ctx.clearRect(0,0,w,h);
+  ctx.strokeStyle='#00E5FF';
+  ctx.lineWidth=2;
+  ctx.beginPath();
+  const points = [];
+  for(let i=0;i<=w;i+=4){
+    const val = Math.min(h-20, Math.random()*h*0.3 + (i/w)*target*6);
+    points.push(val);
+  }
+  ctx.moveTo(0,h-points[0]);
+  for(let i=1;i<points.length;i++){
+    ctx.lineTo(i,h-points[i]);
+  }
+  ctx.stroke();
+
+  if(animatePlane){
+    let idx=0;
+    const interval = setInterval(()=>{
+      if(idx>=points.length){ clearInterval(interval); return;}
+      plane.style.left = idx + 'px';
+      plane.style.top = (h - points[idx]) + 'px';
+      idx++;
+    },16);
+  }
 }
 </script>
 </body>
