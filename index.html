@@ -97,18 +97,6 @@ Developer: SJ Checkers — Contact: <a href="https://wa.me/256781143176" target=
 // --- RESULTS ---
 const RESULTS = ["1.00X - 1.50X","1.51X - 2.00X","2.01X - 3.00X","3.01X - 4.00X","4.01X - 5.00X",
 "5.01X - 6.00","6.01X - 7.00","7.01X - 8.00","8.01X - 10.00","10.01X - 15.00","15.01X - 20.00","20.01X+"];
-
-  document.getElementById('share-btn').addEventListener('click', ()=>{
-  if(navigator.share){
-    navigator.share({
-      title: "OLD-STUDIO Aviator Predictor",
-      text: "Check out this Sure Win Aviator Predictor!",
-      url: window.location.href
-    }).then(()=>console.log('Shared successfully'))
-    .catch(err=>console.log(err));
-  } else {
-    alert("Copy this link to share: " + window.location.href);
-  }
 });
 const sel1 = document.getElementById('result-1');
 const sel2 = document.getElementById('result-2');
