@@ -3,115 +3,123 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>OLD-STUDIO — Virtual Predictor (SJ Checkers)</title>
+  <title>OLD-STUDIO — Predictor (SJ Checkers)</title>
 
   <!-- Fonts & icons -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-  <!-- Main CSS -->
+  <!-- CSS -->
   <link rel="stylesheet" href="style.css">
 
-  <!-- Chart + TF (CDN) -->
+  <!-- Libraries -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.9.0/dist/tf.min.js" defer></script>
-  <!-- Main JS (deferred) -->
+
+  <!-- App JS -->
   <script src="script.js" defer></script>
 </head>
 <body>
-  <main class="app" role="main" id="app">
+  <main id="app" class="app">
     <header class="topbar">
       <div class="brand">
-        <h1>OLD-STUDIO <span class="pill">3X STRATEGY</span></h1>
-        <p class="tag">Virtual Predictor • EDU DEMO • Made by SJ Checkers</p>
+        <div class="logo">
+          <svg width="34" height="34" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect width="24" height="24" rx="6" fill="#0B1220"/><path d="M6 12h12" stroke="#00E5FF" stroke-width="1.6" stroke-linecap="round"/></svg>
+        </div>
+        <div class="brand-text">
+          <h1>OLD-STUDIO <span class="pill">3X STRATEGY</span></h1>
+          <div class="sub">Predictor • Research Prototype • SJ Checkers</div>
+        </div>
       </div>
 
-      <div class="actions">
-        <a class="wa-channel" href="https://whatsapp.com/channel/0029VbApq2W47XeDhGHqYR18" target="_blank" rel="noopener noreferrer">
-          <button class="wa-btn"><i class="fab fa-whatsapp"></i> Join Our WhatsApp Channel</button>
+      <div class="header-actions">
+        <a class="wa" href="https://wa.me/256781143176" target="_blank" rel="noopener noreferrer" title="Contact SJ Checkers">
+          <i class="fab fa-whatsapp"></i>
+        </a>
+        <a class="wa-channel" href="https://whatsapp.com/channel/0029VbApq2W47XeDhGHqYR18" target="_blank" rel="noopener noreferrer" title="Join channel">
+          <button class="btn-join">Join Channel</button>
         </a>
       </div>
     </header>
 
-    <section class="panel controls">
-      <form id="prediction-form" class="form-grid" autocomplete="off">
+    <!-- Controls card -->
+    <section class="card controls">
+      <form id="prediction-form" class="controls-grid" autocomplete="off">
         <label class="label">SELECT LAST 3 RESULTS</label>
-        <div class="selects">
-          <select id="result-1" aria-label="previous" required><option value="" disabled selected>PREVIOUS</option></select>
-          <select id="result-2" aria-label="second" required><option value="" disabled selected>SECOND</option></select>
-          <select id="result-3" aria-label="latest" required><option value="" disabled selected>LATEST</option></select>
+
+        <div class="select-row">
+          <select id="result-1" aria-label="Previous" required><option value="" disabled selected>PREVIOUS</option></select>
+          <select id="result-2" aria-label="Second" required><option value="" disabled selected>SECOND</option></select>
+          <select id="result-3" aria-label="Latest" required><option value="" disabled selected>LATEST</option></select>
         </div>
 
-        <div class="buttons">
+        <div class="controls-row">
           <button id="predict" class="btn primary" type="submit"><i class="fas fa-bolt"></i> PREDICT</button>
-          <button id="stake-sim" class="btn alt" type="button" title="Simulate staking points">SIMULATE STAKE</button>
-          <input id="stake-amount" class="stake-input" type="number" min="1" value="10" title="stake amount">
+
+          <div class="stake-wrap">
+            <input id="stake-amount" class="stake-input" type="number" min="1" value="10" aria-label="Stake amount">
+            <button id="stake-sim" class="btn alt" type="button">SIMULATE STAKE</button>
+          </div>
         </div>
 
-        <div class="helper-row">
-          <button id="retrain" type="button" class="btn ghost">Retrain Model</button>
-          <button id="reset" type="button" class="btn ghost">Reset Saved</button>
-          <button id="export-log" type="button" class="btn ghost">Export Log CSV</button>
+        <div class="help-row">
+          <button id="Sure win" class="btn ghost" type="button">Sure win Model</button>
+          <button id="reset" class="btn ghost" type="button">Reset Saved</button>
+          <button id="export-log" class="btn ghost" type="button">Export Log CSV</button>
         </div>
       </form>
     </section>
 
+    <!-- Main grid -->
     <section class="grid">
-      <article class="panel output">
-        <div class="output-head">
+      <!-- Output panel -->
+      <article class="card output">
+        <div class="out-header">
           <div>
-            <div class="result-title">Prediction Output</div>
-            <div id="status" class="status muted">Model: not trained yet (demo)</div>
+            <div class="title">Prediction Output</div>
+            <div id="status" class="muted small">Model: initializing (Sure win prototype)...</div>
           </div>
-          <div class="points" title="Virtual points for demo">
-            <small class="muted">Points</small>
-            <div id="points" class="points-value">1000</div>
+          <div class="points">
+            <div class="muted small">Virtual Points</div>
+            <div id="points" class="points-pill">1000</div>
           </div>
         </div>
 
-        <div id="out" class="out-area">
-          <div class="placeholder">Select three last results then press <strong>PREDICT</strong>. This is a demo model trained in your browser using synthetic data.</div>
+        <div id="out" class="out-body">
+          <div class="placeholder">Select the last 3 results and press <strong>PREDICT</strong>. This prototype runs entirely in your browser.</div>
         </div>
 
-        <div class="result-footer">
-          <div id="confidence-bar" class="confidence">
+        <div class="out-footer">
+          <div class="confidence" id="confidence-bar" aria-hidden="true">
             <div id="conf-fill" class="conf-fill" style="width:0%"></div>
           </div>
-          <div id="prediction-details" class="details muted">Confidence: —</div>
+          <div id="prediction-details" class="muted small">Confidence: —</div>
         </div>
       </article>
 
-      <aside class="panel sidebar">
+      <!-- Sidebar -->
+      <aside class="card sidebar">
         <div class="side-top">
-          <div style="font-weight:700">Model & Log</div>
-          <div id="model-ready" class="muted">—</div>
+          <div class="muted small">Model</div>
+          <div id="model-ready" class="muted small">—</div>
         </div>
 
-        <div class="stat">
-          <div class="muted">Dataset</div>
-          <div>synthetic (internal)</div>
-        </div>
-        <div class="stat">
-          <div class="muted">Model</div>
-          <div>tiny dense network (in-browser)</div>
+        <div class="meta-list">
+          <div class="meta-item"><span class="muted">Dataset</span><strong>synthetic (internal)</strong></div>
+          <div class="meta-item"><span class="muted">Model</span><strong>tiny dense network (in-browser)</strong></div>
         </div>
 
-        <div style="margin-top:12px">
-          <div class="muted">Training loss</div>
+        <div class="chart-wrap">
           <canvas id="loss-chart" width="320" height="140"></canvas>
         </div>
 
-        <div style="margin-top:12px">
-          <div class="muted">Prediction log</div>
+        <div class="log-block">
+          <div class="muted small">Prediction Log</div>
           <div id="log" class="log" aria-live="polite"></div>
         </div>
       </aside>
     </section>
 
-    <footer class="footer">
-      <div class="disclaimer"><strong>Disclaimer:</strong> This is a demonstration using synthetic data for educational purposes. It does NOT predict real betting outcomes.</div>
-      <div class="credits muted">© OLD-STUDIO — Made by SJ Checkers</div>
-    </footer>
   </main>
 </body>
   </html>
